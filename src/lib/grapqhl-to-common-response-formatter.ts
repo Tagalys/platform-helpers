@@ -201,6 +201,7 @@ class GraphqlResponseFormatter {
         value = {
           id: getIdFromGraphqlId(metafield.reference.id),
           title: metafield.reference.title,
+          handle: metafield.reference.handle,
           products: metafield.reference.products.edges.map((edge) => {
             return this.formatProduct(edge.node, level + 1)
           })

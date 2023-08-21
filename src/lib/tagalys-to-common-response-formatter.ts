@@ -114,6 +114,7 @@ class TagalysToCommonResponseFormatter {
                 detail.metafields[namespace][key]['value'] = {
                   id: parseInt(metafieldReference.value.id),
                   title: metafieldReference.value.name,
+                  handle: metafieldReference.value.slug,
                   products: metafieldReference.value.product_details.map((product_detail) => {
                     return this.formatDetail(product_detail)
                   })

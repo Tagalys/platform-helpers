@@ -172,6 +172,7 @@ class GraphqlQueries{
         ... on Collection{
           id
           title
+          handle
           products(first: 10){
             edges{
               node{
