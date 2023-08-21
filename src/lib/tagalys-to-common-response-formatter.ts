@@ -31,7 +31,7 @@ class TagalysToCommonResponseFormatter {
           }
           break
         case "_vendor":
-          formattedDetail.vendor = detail._vendor
+          formattedDetail.vendor = this.formatVendor(detail._vendor)
           break
         case "images":
           formattedDetail.images = this.formatImages(detail.images)
@@ -53,7 +53,7 @@ class TagalysToCommonResponseFormatter {
           formattedDetail.in_stock = detail.in_stock
           break
         case "_product_type":
-          formattedDetail.product_type = detail._product_type
+          formattedDetail.product_type = this.formatProductType(detail._product_type)
           break
         default:
           // TODO:// CONSIDER TAGALYS CUSTOM FIELDS AND TAG SETS HERE
@@ -96,6 +96,13 @@ class TagalysToCommonResponseFormatter {
       return _vendor[0]
     }
     return _vendor
+  }
+
+  formatProductType(_product_type) {
+    if (Array.isArray(_product_type)) {
+      return _product_type[0]
+    }
+    return _product_type
   }
 
   formatMetafields(detail) {
