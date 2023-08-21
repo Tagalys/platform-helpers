@@ -128,12 +128,12 @@ var TagalysToCommonResponseFormatter = /** @class */ (function () {
                     else {
                         // SECOND LEVEL
                         if (detail.metafields[namespace][key]['type'] === common_1.METAFIELD_TYPES.COLLECTION_REFERENCE) {
-                            delete detail.metafields[namespace][key]['value'];
                             detail.metafields[namespace][key]['id'] = parseInt(detail.metafields[namespace][key]['value'][0]);
+                            delete detail.metafields[namespace][key]['value'];
                         }
                         if (detail.metafields[namespace][key]['type'] === common_1.METAFIELD_TYPES.LIST_PRODUCT_REFERENCE) {
-                            delete detail.metafields[namespace][key]['value'];
                             detail.metafields[namespace][key]['ids'] = detail.metafields[namespace][key]['value'].map(function (value) { return parseInt(value); });
+                            delete detail.metafields[namespace][key]['value'];
                         }
                     }
                     if (detail.metafields[namespace][key]['type'] === common_1.METAFIELD_TYPES.SINGLE_LINE_TEXT_FIELD) {
