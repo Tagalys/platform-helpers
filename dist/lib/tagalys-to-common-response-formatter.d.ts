@@ -4,6 +4,7 @@ declare class TagalysToCommonResponseFormatter {
     getFeaturedImage(images: any): any;
     formatTags(tags: any): any;
     formatVendor(_vendor: any): any;
+    formatProductType(_product_type: any): any;
     formatMetafields(detail: any): any;
     getPriceRelatedFields(detail: any): {
         price_varies: boolean;

@@ -191,6 +191,7 @@ var GraphqlResponseFormatter = /** @class */ (function () {
                 value = {
                     id: (0, common_1.getIdFromGraphqlId)(metafield.reference.id),
                     title: metafield.reference.title,
+                    handle: metafield.reference.handle,
                     products: metafield.reference.products.edges.map(function (edge) {
                         return _this.formatProduct(edge.node, level + 1);
                     })

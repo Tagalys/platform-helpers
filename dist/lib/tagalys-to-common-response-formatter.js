@@ -39,7 +39,7 @@ var TagalysToCommonResponseFormatter = /** @class */ (function () {
                         formattedDetail = __assign(__assign(__assign(__assign({}, formattedDetail), { variants: _this.formatVariants(detail.variants) }), _this.getOptionRelatedFields(detail)), _this.getPriceRelatedFields(detail));
                         break;
                     case "_vendor":
-                        formattedDetail.vendor = detail._vendor;
+                        formattedDetail.vendor = _this.formatVendor(detail._vendor);
                         break;
                     case "images":
                         formattedDetail.images = _this.formatImages(detail.images);
@@ -61,7 +61,7 @@ var TagalysToCommonResponseFormatter = /** @class */ (function () {
                         formattedDetail.in_stock = detail.in_stock;
                         break;
                     case "_product_type":
-                        formattedDetail.product_type = detail._product_type;
+                        formattedDetail.product_type = _this.formatProductType(detail._product_type);
                         break;
                     default:
                         // TODO:// CONSIDER TAGALYS CUSTOM FIELDS AND TAG SETS HERE
@@ -101,6 +101,12 @@ var TagalysToCommonResponseFormatter = /** @class */ (function () {
         }
         return _vendor;
     };
+    TagalysToCommonResponseFormatter.prototype.formatProductType = function (_product_type) {
+        if (Array.isArray(_product_type)) {
+            return _product_type[0];
+        }
+        return _product_type;
+    };
     TagalysToCommonResponseFormatter.prototype.formatMetafields = function (detail) {
         var _this = this;
         for (var namespace in detail.metafields) {
@@ -118,6 +124,7 @@ var TagalysToCommonResponseFormatter = /** @class */ (function () {
                                 detail.metafields[namespace][key]['value'] = {
                                     id: parseInt(metafieldReference.value.id),
                                     title: metafieldReference.value.name,
+                                    handle: metafieldReference.value.slug,
                                     products: metafieldReference.value.product_details.map(function (product_detail) {
                                         return _this.formatDetail(product_detail);
                                     })
