@@ -146,7 +146,6 @@ var MultiMarket = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         if (!response.hasOwnProperty("products")) return [3 /*break*/, 2];
-                        console.log("BEFORE MUTATION", JSON.stringify(response.products[0]));
                         productIds = response.products.map(function (product) { return product.id; });
                         return [4 /*yield*/, this.getProductDetailsForMarket(productIds)];
                     case 1:
@@ -155,7 +154,6 @@ var MultiMarket = /** @class */ (function () {
                             var hasMarketSpecificDetails = marketSpecificDetails_1.hasOwnProperty(product.id);
                             hasMarketSpecificDetails ? _this.mutateProductDetails(product, marketSpecificDetails_1[product.id]) : _this.resetProductPrice(product);
                         });
-                        console.log("AFTER MUTATION", JSON.stringify(response.products[0]));
                         _a.label = 2;
                     case 2: return [2 /*return*/, response];
                 }
