@@ -157,7 +157,6 @@ class MultiMarket {
 
   async updateProductDetailsForMarket(response) {
     if (response.hasOwnProperty("products")) {
-      console.log("BEFORE MUTATION", JSON.stringify(response.products[0]))
       const productIds = response.products.map((product) => product.id)
       let marketSpecificDetails = await this.getProductDetailsForMarket(productIds)
       
@@ -165,7 +164,6 @@ class MultiMarket {
         const hasMarketSpecificDetails = marketSpecificDetails.hasOwnProperty(product.id)
         hasMarketSpecificDetails ? this.mutateProductDetails(product, marketSpecificDetails[product.id]) : this.resetProductPrice(product)
       })
-      console.log("AFTER MUTATION", JSON.stringify(response.products[0]))
     }
     return response
   }
