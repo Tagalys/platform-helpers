@@ -77,7 +77,17 @@ var GraphqlResponseFormatter = /** @class */ (function () {
             options: product.options.map(function (option) { return option.name; }),
             has_only_default_variant: this.hasOnlyDefaultVariant(product.options, variants),
             in_stock: (product.totalInventory > 0),
+            collections: this.formatAssociatedCollectionDetails(product.collections),
         };
+    };
+    GraphqlResponseFormatter.prototype.formatAssociatedCollectionDetails = function (collections) {
+        return collections.edges.map(function (collection) {
+            return {
+                id: (0, common_1.getIdFromGraphqlId)(collection.node.id),
+                handle: collection.node.handle,
+                title: collection.node.title
+            };
+        });
     };
     GraphqlResponseFormatter.formatOptions = function (options) {
         return options.map(function (option, index) {

@@ -4,6 +4,7 @@ declare class GraphqlQueries {
     getMedia: () => string;
     getVariants: () => string;
     getReferenceMetafields: (level: any) => any;
+    getAssociatedCollectionQuery: () => string;
     getProductMetafields: (level?: number) => any;
     getProductDetails: () => string;
     static getFilters: () => string;

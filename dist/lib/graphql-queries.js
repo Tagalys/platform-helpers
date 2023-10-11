@@ -21,14 +21,17 @@ var GraphqlQueries = /** @class */ (function () {
                 return "";
             }
             level += 1;
-            return "\n      reference{\n        ... on Product{\n          ".concat(_this.getBasicProductDetails(), "\n          ").concat(_this.getVariants(), "\n          ").concat(_this.getImages(), "\n          ").concat(_this.getMedia(), "     \n          ").concat(_this.getProductMetafields(level), "\n        }\n        ... on Collection{\n          id\n          title\n          handle\n          products(first: 10){\n            edges{\n              node{\n                ").concat(_this.getBasicProductDetails(), "\n                ").concat(_this.getVariants(), "\n                ").concat(_this.getImages(), "\n                ").concat(_this.getMedia(), "     \n                ").concat(_this.getProductMetafields(level), "           \n              }\n            }\n          }\n        }\n      }\n      references(first: 10){\n        edges{\n          node{\n            ... on Product{\n              ").concat(_this.getBasicProductDetails(), "\n              ").concat(_this.getVariants(), "\n              ").concat(_this.getImages(), "\n              ").concat(_this.getMedia(), "\n              ").concat(_this.getProductMetafields(level), "\n            }\n          }\n        }\n      }\n    ");
+            return "\n      reference{\n        ... on Product{\n          ".concat(_this.getBasicProductDetails(), "\n          ").concat(_this.getVariants(), "\n          ").concat(_this.getImages(), "\n          ").concat(_this.getMedia(), "\n          ").concat(_this.getProductMetafields(level), "\n        }\n        ... on Collection{\n          id\n          title\n          handle\n          products(first: 10){\n            edges{\n              node{\n                ").concat(_this.getBasicProductDetails(), "\n                ").concat(_this.getVariants(), "\n                ").concat(_this.getImages(), "\n                ").concat(_this.getMedia(), "     \n                ").concat(_this.getProductMetafields(level), "\n              }\n            }\n          }\n        }\n      }\n      references(first: 10){\n        edges{\n          node{\n            ... on Product{\n              ").concat(_this.getBasicProductDetails(), "\n              ").concat(_this.getVariants(), "\n              ").concat(_this.getImages(), "\n              ").concat(_this.getMedia(), "\n              ").concat(_this.getProductMetafields(level), "\n            }\n          }\n        }\n      }\n    ");
+        };
+        this.getAssociatedCollectionQuery = function () {
+            return "\n      collections(first:250){\n        edges{\n          node{\n            id\n            title\n            handle\n          }\n        }\n      }\n    ";
         };
         this.getProductMetafields = function (level) {
             if (level === void 0) { level = 0; }
             return "\n      metafields(identifiers: $product_metafields){\n        id\n        key\n        namespace\n        type\n        value\n        description\n        ".concat(_this.getReferenceMetafields(level), "\n      }\n    ");
         };
         this.getProductDetails = function () {
-            return "\n      ".concat(_this.getBasicProductDetails(), "\n      ").concat(_this.getVariants(), "\n      ").concat(_this.getImages(), "\n      ").concat(_this.getMedia(), "\n      ").concat(_this.getProductMetafields(), "\n    ");
+            return "\n      ".concat(_this.getBasicProductDetails(), "\n      ").concat(_this.getVariants(), "\n      ").concat(_this.getImages(), "\n      ").concat(_this.getMedia(), "\n      ").concat(_this.getAssociatedCollectionQuery(), "\n      ").concat(_this.getProductMetafields(), "\n    ");
         };
     }
     GraphqlQueries.getFilters = function () {

@@ -27,7 +27,9 @@ declare class GraphqlResponseFormatter {
         options: any;
         has_only_default_variant: boolean;
         in_stock: boolean;
+        collections: any;
     };
+    formatAssociatedCollectionDetails(collections: any): any;
     static formatOptions(options: any): any;
     formatImages(images: any): any;
     formatMedia(media: any): any[];
