@@ -167,6 +167,7 @@ class GraphqlQueries{
           ${this.getVariants()}
           ${this.getImages()}
           ${this.getMedia()}
+          ${this.getAssociatedCollectionQuery()}
           ${this.getProductMetafields(level)}
         }
         ... on Collection{

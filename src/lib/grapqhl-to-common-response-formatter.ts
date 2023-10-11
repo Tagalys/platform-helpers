@@ -40,7 +40,6 @@ class GraphqlResponseFormatter {
     const media = this.formatMedia(product.media)
     const images = this.formatImages(product.images)
     const priceDetails = getPriceDetails(product)
-    debugger
     return {
       id: getIdFromGraphqlId(product.id),
       title: product.title,

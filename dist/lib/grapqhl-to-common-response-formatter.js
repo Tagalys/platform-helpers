@@ -51,7 +51,6 @@ var GraphqlResponseFormatter = /** @class */ (function () {
         var media = this.formatMedia(product.media);
         var images = this.formatImages(product.images);
         var priceDetails = (0, common_1.getPriceDetails)(product);
-        debugger;
         return {
             id: (0, common_1.getIdFromGraphqlId)(product.id),
             title: product.title,
