@@ -67,7 +67,18 @@ class GraphqlResponseFormatter {
       options: product.options.map((option) => option.name),
       has_only_default_variant: this.hasOnlyDefaultVariant(product.options, variants),
       in_stock: (product.totalInventory > 0),
+      collections: this.formatAssociatedCollectionDetails(product.collections),
     }
+  }
+
+  formatAssociatedCollectionDetails(collections) { 
+    return collections.edges.map((collection) => {
+      return {
+        id: getIdFromGraphqlId(collection.node.id),
+        handle: collection.node.handle,
+        title: collection.node.title
+      }
+    })
   }
 
   static formatOptions(options) {

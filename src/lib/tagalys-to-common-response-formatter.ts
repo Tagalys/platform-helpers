@@ -55,6 +55,9 @@ class TagalysToCommonResponseFormatter {
         case "_product_type":
           formattedDetail.product_type = this.formatProductType(detail._product_type)
           break
+        case "published_collections_on_online_store":
+          formattedDetail.collections = detail.published_collections_on_online_store
+          break
         default:
           // TODO:// CONSIDER TAGALYS CUSTOM FIELDS AND TAG SETS HERE
           break;

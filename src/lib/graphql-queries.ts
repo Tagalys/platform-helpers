@@ -124,7 +124,7 @@ class GraphqlQueries{
       }
     `
   }
-  
+
   getVariants = () => {
     return `
       variants(first: 250){
@@ -153,8 +153,8 @@ class GraphqlQueries{
       }
     `
   }
-  
-  
+
+
   getReferenceMetafields = (level) =>{
     if(level >= MAX_LEVEL_SUPPORTED){
       return ""
@@ -166,7 +166,7 @@ class GraphqlQueries{
           ${this.getBasicProductDetails()}
           ${this.getVariants()}
           ${this.getImages()}
-          ${this.getMedia()}     
+          ${this.getMedia()}
           ${this.getProductMetafields(level)}
         }
         ... on Collection{
@@ -180,7 +180,7 @@ class GraphqlQueries{
                 ${this.getVariants()}
                 ${this.getImages()}
                 ${this.getMedia()}     
-                ${this.getProductMetafields(level)}           
+                ${this.getProductMetafields(level)}
               }
             }
           }
@@ -201,7 +201,21 @@ class GraphqlQueries{
       }
     `
   }
-  
+
+  getAssociatedCollectionQuery = () => {
+    return `
+      collections(first:250){
+        edges{
+          node{
+            id
+            title
+            handle
+          }
+        }
+      }
+    `
+  }
+
   getProductMetafields = (level = 0) => {
     return `
       metafields(identifiers: $product_metafields){
@@ -215,19 +229,18 @@ class GraphqlQueries{
       }
     `
   }
-  
-  
+
   getProductDetails = () => {
     return `
       ${this.getBasicProductDetails()}
       ${this.getVariants()}
       ${this.getImages()}
       ${this.getMedia()}
+      ${this.getAssociatedCollectionQuery()}
       ${this.getProductMetafields()}
     `
   }
-  
-  
+
   static getFilters = () => {
     return `
       filters {
