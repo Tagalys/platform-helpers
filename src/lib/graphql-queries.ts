@@ -180,7 +180,8 @@ class GraphqlQueries{
                 ${this.getBasicProductDetails()}
                 ${this.getVariants()}
                 ${this.getImages()}
-                ${this.getMedia()}     
+                ${this.getMedia()}
+                ${this.getAssociatedCollectionQuery()}
                 ${this.getProductMetafields(level)}
               }
             }
@@ -195,6 +196,7 @@ class GraphqlQueries{
               ${this.getVariants()}
               ${this.getImages()}
               ${this.getMedia()}
+              ${this.getAssociatedCollectionQuery()}
               ${this.getProductMetafields(level)}
             }
           }

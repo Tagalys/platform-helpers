@@ -36,7 +36,6 @@ class GraphqlResponseFormatter {
 
   formatProduct(product, level = 1) {
     //TODO:// consider currency and display formatting for price related fields
-    console.log("formatting p", level)
     const variants = this.formatVariants(product.variants)
     const media = this.formatMedia(product.media)
     const images = this.formatImages(product.images)
