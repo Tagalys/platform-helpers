@@ -47,6 +47,7 @@ var GraphqlResponseFormatter = /** @class */ (function () {
     GraphqlResponseFormatter.prototype.formatProduct = function (product, level) {
         if (level === void 0) { level = 1; }
         //TODO:// consider currency and display formatting for price related fields
+        console.log("formatting p", level);
         var variants = this.formatVariants(product.variants);
         var media = this.formatMedia(product.media);
         var images = this.formatImages(product.images);
