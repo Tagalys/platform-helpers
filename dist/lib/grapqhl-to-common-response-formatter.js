@@ -232,6 +232,12 @@ var GraphqlResponseFormatter = /** @class */ (function () {
         if (type === common_1.METAFIELD_TYPES.LIST_SINGLE_LINE_TEXT_FIELD) {
             value = JSON.parse(value);
         }
+        if (type === common_1.METAFIELD_TYPES.JSON) {
+            value = JSON.parse(value);
+        }
+        if (type === common_1.METAFIELD_TYPES.RATING) {
+            value = JSON.parse(value);
+        }
         return {
             type: type,
             value: value

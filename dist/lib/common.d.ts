@@ -25,5 +25,7 @@ export declare const METAFIELD_TYPES: {
     COLLECTION_REFERENCE: string;
     SINGLE_LINE_TEXT_FIELD: string;
     LIST_SINGLE_LINE_TEXT_FIELD: string;
+    JSON: string;
+    RATING: string;
 };
 export declare const getIdFromGraphqlId: (graphqlId: any) => number;

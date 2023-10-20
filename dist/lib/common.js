@@ -91,7 +91,9 @@ exports.METAFIELD_TYPES = {
     LIST_PRODUCT_REFERENCE: 'list.product_reference',
     COLLECTION_REFERENCE: 'collection_reference',
     SINGLE_LINE_TEXT_FIELD: "single_line_text_field",
-    LIST_SINGLE_LINE_TEXT_FIELD: "list.single_line_text_field"
+    LIST_SINGLE_LINE_TEXT_FIELD: "list.single_line_text_field",
+    JSON: "json",
+    RATING: "rating",
 };
 var getIdFromGraphqlId = function (graphqlId) {
     var id = graphqlId.split("/").slice(-1)[0];
