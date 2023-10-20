@@ -240,6 +240,12 @@ class GraphqlResponseFormatter {
     if (type === METAFIELD_TYPES.LIST_SINGLE_LINE_TEXT_FIELD) {
       value = JSON.parse(value)
     }
+    if (type === METAFIELD_TYPES.JSON) {
+      value = JSON.parse(value)
+    }
+    if (type === METAFIELD_TYPES.RATING) {
+      value = JSON.parse(value)
+    }
     return {
       type: type,
       value: value
