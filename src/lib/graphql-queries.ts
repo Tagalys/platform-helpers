@@ -131,7 +131,6 @@ class GraphqlQueries{
           node{
             id
             title
-            quantityAvailable
             sku
             selectedOptions{
               name
