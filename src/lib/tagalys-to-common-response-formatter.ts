@@ -49,9 +49,6 @@ class TagalysToCommonResponseFormatter {
           const formattedImages = this.formatImages(detail.images)
           formattedDetail.featured_image = this.getFeaturedImage(formattedImages)
           formattedDetail.media = detail.media
-        case "in_stock":
-          formattedDetail.in_stock = detail.in_stock
-          break
         case "_product_type":
           formattedDetail.product_type = this.formatProductType(detail._product_type)
           break
@@ -207,7 +204,8 @@ class TagalysToCommonResponseFormatter {
         if (variant.compare_at_price) {
           variant.compare_at_price = applyCurrencyConversion(variant.compare_at_price)
         }
-        return variant
+        const { position, ...variantObject } = variant
+        return variantObject
       })
     }
     return []

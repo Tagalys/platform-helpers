@@ -65,7 +65,6 @@ class GraphqlResponseFormatter {
       compare_at_price_max: priceDetails.compare_at_price_max,
       options: product.options.map((option) => option.name),
       has_only_default_variant: this.hasOnlyDefaultVariant(product.options, variants),
-      in_stock: (product.totalInventory > 0),
       collections: this.formatAssociatedCollectionDetails(product.collections),
     }
   }
@@ -174,7 +173,6 @@ class GraphqlResponseFormatter {
         price: variantEdge.node.price ? applyCurrencyConversion(variantEdge.node.price.amount) : null,
         compare_at_price: variantEdge.node.compareAtPrice ? applyCurrencyConversion(variantEdge.node.compareAtPrice.amount) : null,
         available: variantEdge.node.availableForSale,
-        position: index + 1,
         metafields: {},
         ...this.formatSelectedVariantOptions(variantEdge.node),
       }

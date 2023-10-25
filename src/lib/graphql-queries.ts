@@ -26,7 +26,6 @@ class GraphqlQueries{
       productType
       vendor
       tags
-      totalInventory
       publishedAt
       availableForSale
       options{
