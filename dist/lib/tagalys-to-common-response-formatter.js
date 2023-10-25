@@ -10,6 +10,17 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var common_1 = require("./common");
 var global_context_1 = require("./global-context");
@@ -57,9 +68,6 @@ var TagalysToCommonResponseFormatter = /** @class */ (function () {
                         var formattedImages = _this.formatImages(detail.images);
                         formattedDetail.featured_image = _this.getFeaturedImage(formattedImages);
                         formattedDetail.media = detail.media;
-                    case "in_stock":
-                        formattedDetail.in_stock = detail.in_stock;
-                        break;
                     case "_product_type":
                         formattedDetail.product_type = _this.formatProductType(detail._product_type);
                         break;
@@ -207,7 +215,8 @@ var TagalysToCommonResponseFormatter = /** @class */ (function () {
                 if (variant.compare_at_price) {
                     variant.compare_at_price = (0, common_1.applyCurrencyConversion)(variant.compare_at_price);
                 }
-                return variant;
+                var position = variant.position, variantObject = __rest(variant, ["position"]);
+                return variantObject;
             });
         }
         return [];

@@ -26,7 +26,6 @@ declare class GraphqlResponseFormatter {
         compare_at_price_max: number;
         options: any;
         has_only_default_variant: boolean;
-        in_stock: boolean;
         collections: any;
     };
     formatAssociatedCollectionDetails(collections: any): any;

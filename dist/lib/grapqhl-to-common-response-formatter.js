@@ -76,7 +76,6 @@ var GraphqlResponseFormatter = /** @class */ (function () {
             compare_at_price_max: priceDetails.compare_at_price_max,
             options: product.options.map(function (option) { return option.name; }),
             has_only_default_variant: this.hasOnlyDefaultVariant(product.options, variants),
-            in_stock: (product.totalInventory > 0),
             collections: this.formatAssociatedCollectionDetails(product.collections),
         };
     };
@@ -169,7 +168,7 @@ var GraphqlResponseFormatter = /** @class */ (function () {
     GraphqlResponseFormatter.prototype.formatVariants = function (variants) {
         var _this = this;
         return variants.edges.map(function (variantEdge, index) {
-            return __assign({ id: (0, common_1.getIdFromGraphqlId)(variantEdge.node.id), title: variantEdge.node.title, sku: variantEdge.node.sku, price: variantEdge.node.price ? (0, common_1.applyCurrencyConversion)(variantEdge.node.price.amount) : null, compare_at_price: variantEdge.node.compareAtPrice ? (0, common_1.applyCurrencyConversion)(variantEdge.node.compareAtPrice.amount) : null, available: variantEdge.node.availableForSale, position: index + 1, metafields: {} }, _this.formatSelectedVariantOptions(variantEdge.node));
+            return __assign({ id: (0, common_1.getIdFromGraphqlId)(variantEdge.node.id), title: variantEdge.node.title, sku: variantEdge.node.sku, price: variantEdge.node.price ? (0, common_1.applyCurrencyConversion)(variantEdge.node.price.amount) : null, compare_at_price: variantEdge.node.compareAtPrice ? (0, common_1.applyCurrencyConversion)(variantEdge.node.compareAtPrice.amount) : null, available: variantEdge.node.availableForSale, metafields: {} }, _this.formatSelectedVariantOptions(variantEdge.node));
         });
     };
     GraphqlResponseFormatter.prototype.formatSelectedVariantOptions = function (variant) {
