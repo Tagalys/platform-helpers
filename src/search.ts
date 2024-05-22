@@ -89,7 +89,7 @@ class Search {
           })
         }
       }
-      filterVariables['filters'] = filtersToApply
+      filterVariables['productFilters'] = filtersToApply
     }
     return filterVariables
   }
@@ -126,12 +126,13 @@ class Search {
         $after: String,
         $sortKey: SearchSortKeys,
         $reverse: Boolean,
+        $productFilters:  [ProductFilter!],
         $product_metafields: [HasMetafieldsIdentifier!]!,
       ) @inContext(
           country: ${globalContext.configuration.getCountryCode()},
           language: ${globalContext.configuration.getLanguageCode()}
         ) {
-        search(query: $query, first: $first, last: $last, after: $after, before: $before,  reverse: $reverse, sortKey: $sortKey){
+        search(query: $query, first: $first, last: $last, after: $after, before: $before,  reverse: $reverse, sortKey: $sortKey, productFilters: $productFilters){
           edges{
             node{
               ... on Product{
