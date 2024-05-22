@@ -12,13 +12,15 @@ var __assign = (this && this.__assign) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var tagalys_to_common_response_formatter_1 = require("./lib/tagalys-to-common-response-formatter");
-var product_listing_page_1 = require("./product-listing-page");
 var multi_market_1 = require("./lib/multi-market");
 var shopifyApi_1 = require("./lib/shopifyApi");
 var global_context_1 = require("./lib/global-context");
-exports.default = __assign(__assign(__assign({ globalContext: {
+var product_listing_page_1 = require("./product-listing-page");
+var search_suggestions_1 = require("./search-suggestions");
+var search_1 = require("./search");
+exports.default = __assign(__assign(__assign(__assign(__assign({ globalContext: {
         set: function (opts) { return global_context_1.default.set(opts); },
         getConfiguration: function () { return global_context_1.default.getConfiguration(); },
         getShopifyConfiguration: function () { return global_context_1.default.getShopifyConfiguration(); },
-    }, apiClient: function () { return new shopifyApi_1.default(); } }, tagalys_to_common_response_formatter_1.default.export()), product_listing_page_1.default.export()), multi_market_1.default.export());
+    }, apiClient: function () { return new shopifyApi_1.default(); } }, tagalys_to_common_response_formatter_1.default.export()), search_suggestions_1.default.export()), search_1.default.export()), product_listing_page_1.default.export()), multi_market_1.default.export());
 //# sourceMappingURL=index.js.map
