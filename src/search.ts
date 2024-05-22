@@ -6,20 +6,8 @@ import globalContext from './lib/global-context';
 
 const DEFAULT_SORT_OPTIONS = [
   {
-    "id": "manual",
-    "label": "Featured"
-  },
-  {
-    "id": "best-selling",
-    "label": "Best selling",
-  },
-  {
-    "id": "title-asc",
-    "label": "Alphabetically, A-Z",
-  },
-  {
-    "id": "title-desc",
-    "label": "Alphabetically, Z-A",
+    "id": "relevance",
+    "label": "Relevance"
   },
   {
     "id": "price-asc",
@@ -28,14 +16,6 @@ const DEFAULT_SORT_OPTIONS = [
   {
     "id": "price-desc",
     "label": "Price, high to low"
-  },
-  {
-    "id": "created-asc",
-    "label": "Date, old to new"
-  },
-  {
-    "id": "created-desc",
-    "label": "Date, new to old"
   }
 ]
 
@@ -53,22 +33,11 @@ class Search {
   }
 
   getSortVariables() {
-    const sortOptionToSortKeyMap = {
-      'manual': {
-        sortKey: "MANUAL",
-        reverse: false
-      },
-      'best-selling': {
-        sortKey: "BEST_SELLING",
-        reverse: false
-      },
-      'created-desc': {
-        sortKey: 'CREATED',
-        reverse: true
-      },
-      'created-asc': {
-        sortKey: 'CREATED',
-        reverse: false
+    // for sort option id, refer DEFAULT_SORT_OPTIONS
+    const sortOptionIdToSortKeyMap = {
+      'relevance': {
+        sortKey: 'RELEVANCE',
+        reverse: false,
       },
       'price-desc': {
         sortKey: 'PRICE',
@@ -77,25 +46,9 @@ class Search {
       'price-asc': {
         sortKey: 'PRICE',
         reverse: false
-      },
-      'title-asc': {
-        sortKey: 'TITLE',
-        reverse: false
-      },
-      'title-desc': {
-        sortKey: 'TITLE',
-        reverse: true
-      },
-      'id': {
-        sortKey: 'ID',
-        reverse: false
-      },
-      'collection-default': {
-        sortKey: 'COLLECTION_DEFAULT',
-        reverse: false
       }
     }
-    return sortOptionToSortKeyMap[this.requestState.sort]
+    return sortOptionIdToSortKeyMap[this.requestState.sort]
   }
 
   getPaginationVariables() {
@@ -171,13 +124,14 @@ class Search {
         $last: Int,
         $before: String,
         $after: String,
+        $sortKey: SearchSortKeys,
         $reverse: Boolean,
         $product_metafields: [HasMetafieldsIdentifier!]!,
       ) @inContext(
           country: ${globalContext.configuration.getCountryCode()},
           language: ${globalContext.configuration.getLanguageCode()}
         ) {
-        search(query: $query, first: $first, last: $last, after: $after, before: $before,  reverse: $reverse){
+        search(query: $query, first: $first, last: $last, after: $after, before: $before,  reverse: $reverse, sortKey: $sortKey){
           edges{
             node{
               ... on Product{
@@ -245,6 +199,8 @@ class Search {
         sortOption.selected = false
       }
     })
+
+    // this logic can be improved, by defining a 'default' key
     if(this.requestState.sort === null && sortOptions.length > 0){
       sortOptions[0].selected = true
     }
