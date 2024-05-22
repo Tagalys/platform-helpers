@@ -16,7 +16,7 @@ class GraphqlQueries{
       }
     `
   }
-  
+
   getBasicProductDetails = () => {
     return `
       id
@@ -65,7 +65,7 @@ class GraphqlQueries{
       }
     `
   }
-  
+
   getMedia = () => {
     return `
       media(first: 250){
@@ -151,7 +151,6 @@ class GraphqlQueries{
       }
     `
   }
-
 
   getReferenceMetafields = (level) =>{
     if(level >= MAX_LEVEL_SUPPORTED){

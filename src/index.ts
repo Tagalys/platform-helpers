@@ -1,8 +1,10 @@
 import TagalysToCommonResponseFormatter from "./lib/tagalys-to-common-response-formatter";
-import ProductListingPage from "./product-listing-page";
 import MultiMarket from './lib/multi-market'
 import ShopifyAPI from "./lib/shopifyApi";
 import globalContext from "./lib/global-context";
+import ProductListingPage from "./product-listing-page";
+import SearchSuggestions from "./search-suggestions";
+import Search from "./search";
 
 export default {
   globalContext: {
@@ -12,6 +14,8 @@ export default {
   },
   apiClient: () => new ShopifyAPI(),
   ...TagalysToCommonResponseFormatter.export(),
+  ...SearchSuggestions.export(),
+  ...Search.export(),
   ...ProductListingPage.export(),
   ...MultiMarket.export()
 }
