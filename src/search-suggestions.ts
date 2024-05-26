@@ -16,6 +16,53 @@ class SearchSuggestions {
     this.graphqlResponseFormatter = new GraphqlResponseFormatter()
   }
 
+  getQuery() {
+    const { valid, message } = this.validateRequest();
+    if (!valid) {
+      throw new Error(message)
+    }
+
+    const resourcesToRequest = this.getResourcesToRequest()
+    const query = this.getSearchSuggestionsQuery(resourcesToRequest)
+    const isProductRequested = resourcesToRequest.includes('products')
+    const isSearchableFieldsProvided = (this.requestState.params?.searchableFields?.length > 0)
+
+    return `
+      query SearchSuggestions(
+        $query: String!,
+        $types: [PredictiveSearchType!],
+        ${isProductRequested ? '$product_metafields: [HasMetafieldsIdentifier!]!' : ''},
+        ${isSearchableFieldsProvided ? "$searchableFields: '[SearchableField!]" : ''}
+      ) @inContext(
+          country: ${globalContext.configuration.getCountryCode()},
+          language: ${globalContext.configuration.getLanguageCode()}
+        ){
+        predictiveSearch(
+          query: $query,
+          limitScope: EACH,
+          limit: 10,
+          unavailableProducts: ${this.requestState.params.unavailableProducts},
+          ${isSearchableFieldsProvided ? `searchableFields: $searchableFields` : ''},
+          types: $types
+        ){
+          ${query}
+        }
+      }
+    `
+  }
+
+  getQueryVariables() {
+    let queryVariables: any = {
+      query: `${this.requestState.params.query}`,
+      types: this.getResourcesToRequest().map(resource => this.getSearchableResourceType(resource)),
+      ...this.getMetafieldVariables()
+    }
+    if (this.requestState.params?.searchableFields?.length > 0) {
+      queryVariables.searchableFields = this.requestState.params.searchableFields
+    }
+    return queryVariables
+  }
+
   getMetafieldVariables() {
     if (!globalContext.shopifyConfiguration.hasMetafields()) {
       return {
@@ -28,92 +75,76 @@ class SearchSuggestions {
     }
   }
 
-  getQueryVariables() {
-    return {
-      query: `${this.requestState.params.query}`,
-      ...this.getMetafieldVariables()
+  getSearchableResourceType(resource) {
+    switch (resource) {
+      case 'collections':
+        return 'COLLECTION'
+      case 'products':
+        return 'PRODUCT'
+      case 'pages':
+        return 'PAGE'
+      case 'articles':
+        return 'ARTICLE'
+      case 'queries':
+        return 'QUERY'
     }
   }
 
   validateRequest() {
     // validate only queries, collections, products, pages, articles are requested
-    const allowedRequestTypes = ['queries', 'collections', 'products', 'pages', 'articles'];
-    const requestedTypes = Object.keys(this.requestState.params.request)
-    const hasRequestedAllowedTypes = requestedTypes.every(type => allowedRequestTypes.includes(type));
+    const allowedResources = ['queries', 'collections', 'products', 'pages', 'articles'];
+    const requestedResources = this.getResourcesToRequest();
+    const hasRequestedAllowedTypes = requestedResources.every(type => allowedResources.includes(type));
     return {
       valid: hasRequestedAllowedTypes,
-      message: `Invalid request type requested, allowed types are ${allowedRequestTypes.join(', ')}`
+      message: hasRequestedAllowedTypes ? '' : `Invalid request type requested, allowed types are ${allowedResources.join(', ')}`
     };
   }
 
-  getQuery() {
-    const { valid, message } = this.validateRequest();
-    if (!valid) {
-      throw new Error(message)
-    }
-
-    const requestedTypes = Object.keys(this.requestState.params.request)
-    const query = this.getSearchSuggestionsQuery(requestedTypes)
-    return `
-      query SearchSuggestions(
-        $query: String!,
-        $product_metafields: [HasMetafieldsIdentifier!]!,
-      ) @inContext(
-          country: ${globalContext.configuration.getCountryCode()},
-          language: ${globalContext.configuration.getLanguageCode()}
-        ){
-        predictiveSearch(query: $query, limitScope: EACH, limit: 10){
-          ${query}
-        }
-      }
-    `
+  getResourcesToRequest() {
+    return Object.keys(this.requestState.params.request)
   }
 
-  getSearchSuggestionsQuery = (requestedTypes) => {
+  getSearchSuggestionsQuery = (resourcesToRequest) => {
     let query = ''
-    if (requestedTypes.includes('queries')) {
+    if (resourcesToRequest.includes('queries')) {
       query += `
         queries {
           text
         }
       `
     }
-    if (requestedTypes.includes('collections')) {
+    if (resourcesToRequest.includes('collections')) {
       query += `
         collections {
           id
           title
-          handle
-          onlineStoreURL
+          onlineStoreUrl
         }
       `
     }
-    if (requestedTypes.includes('products')) {
+    if (resourcesToRequest.includes('products')) {
       query += `
         products {
           ${this.queries.getProductDetails()}
         }
       `
     }
-    if (requestedTypes.includes('pages')) {
+    if (resourcesToRequest.includes('pages')) {
       query += `
         pages {
           id
           title
-          handle
+          onlineStoreUrl
         }
       `
     }
-    if (requestedTypes.includes('articles')) {
+    if (resourcesToRequest.includes('articles')) {
       query += `
         articles {
           id
           title
-          authorV2{
-            name
-          }
-          tags
-          handle
+          onlineStoreUrl
         }
       `
     }
@@ -121,65 +152,77 @@ class SearchSuggestions {
   }
 
   formatResponse(_, shopifyResponse) {
-    let response: any = {
+    const response: any = {
       queries: [],
       products: [],
-    }
-    const shopifyResponseData = shopifyResponse.predictiveSearch
-    if (shopifyResponseData?.collections?.length > 0) {
-      const thisSection = {
-        section_id: "collections",
-        section_title: "Collections",
-        items: shopifyResponseData.collections.map((collection) => {
-          return {
-            displayString: collection.title,
-            handle: collection.handle,
-            url: collection.onlineStoreURL,
-          }
-        })
+    };
+    const shopifyResponseData = shopifyResponse.predictiveSearch;
+    const resourcesToRequest = this.getResourcesToRequest();
+
+    resourcesToRequest.forEach(resource => {
+      const limit = this.requestState.params.request[resource].limit;
+
+      switch (resource) {
+        case "queries": {
+          const thisSection = {
+            section_id: "queries",
+            section_title: "Queries",
+            items: shopifyResponseData.queries.slice(0, limit).map(query => ({
+              displayString: query.text,
+              queryString: `${this.requestState.queryStringConfiguration.queryParameter}=${query.text}`,
+            })),
+          };
+          response.queries.push(thisSection);
+          break;
+        }
+        case "collections": {
+          const thisSection = {
+            section_id: "collections",
+            section_title: "Collections",
+            items: shopifyResponseData.collections.slice(0, limit).map(collection => ({
+              displayString: collection.title,
+              link: collection.onlineStoreURL,
+            })),
+          };
+          response.queries.push(thisSection);
+          break;
+        }
+        case "pages": {
+          const thisSection = {
+            section_id: "pages",
+            section_title: "Pages",
+            items: shopifyResponseData.pages.slice(0, limit).map(page => ({
+              displayString: page.title,
+              link: page.onlineStoreUrl,
+            })),
+          };
+          response.queries.push(thisSection);
+          break;
+        }
+        case "articles": {
+          const thisSection = {
+            section_id: "articles",
+            section_title: "Articles",
+            items: shopifyResponseData.articles.slice(0, limit).map(article => ({
+              displayString: article.title,
+              link: article.onlineStoreUrl,
+            })),
+          };
+          response.queries.push(thisSection);
+          break;
+        }
+        case "products": {
+          response.products = shopifyResponseData.products.slice(0, limit).map(product =>
+            this.graphqlResponseFormatter.formatProduct(product)
+          );
+          break;
+        }
+        default:
+          break;
       }
-      response.queries.push(thisSection)
-    }
-    if (shopifyResponseData?.pages?.length > 0) {
-      const thisSection = {
-        section_id: "pages",
-        section_title: "Pages",
-        items: shopifyResponseData.pages.map((page) => {
-          return {
-            displayString: page.title,
-            handle: page.handle,
-            url: page.onlineStoreURL,
-          }
-        })
-      }
-      response.queries.push(thisSection)
-    }
-    if (shopifyResponseData?.articles?.length > 0) {
-      const thisSection = {
-        section_id: "articles",
-        section_title: "Articles",
-        items: shopifyResponseData.articles.map((article) => {
-          return {
-            displayString: article.title,
-            handle: article.handle,
-            url: article.onlineStoreURL,
-          }
-        })
-      }
-      response.queries ||= []
-      response.queries.push(thisSection)
-    }
-    if (shopifyResponseData?.products?.length > 0) {
-      response.products = shopifyResponseData.products.map((product) => this.graphqlResponseFormatter.formatProduct(product))
-    }
-    // if (shopifyResponseData.queries) {
-    //   response.queries = shopifyResponse.predictiveSearch.queries
-    // }
-    return response
-    // return {
-    //   name: shopifyResponse.collection.title,
-    //   products: this.graphqlResponseFormatter.formatProducts(shopifyResponse.collection.products),
-    // }
+    });
+
+    return response;
   }
 
   apiClient() {

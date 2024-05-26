@@ -209,6 +209,7 @@ class Search {
   }
 
   formatResponse(requestOptions, shopifyResponse) {
+    // handle empty node: {}
     return {
       products: shopifyResponse.search.edges.map((productEdge) => this.graphqlResponseFormatter.formatProduct(productEdge.node)),
       filters: this.graphqlResponseFormatter.formatFilters(shopifyResponse.search.productFilters, this.requestState.filters, this.responseState.price_ranges),
