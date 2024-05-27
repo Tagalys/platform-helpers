@@ -98,9 +98,9 @@ class Base{
   formatResponse(requestOptions, shopifyResponse) { }
   getDataForInitialRequest(requestOptions) { }
 
-  getFilterData(response) {
-    const filterInputs = GraphqlResponseFormatter.getFilterInputs(response.search.filters)
-    const rangeFilter = response.search.filters.find((filter) => filter.type === "PRICE_RANGE")
+  getFilterData(filtersResponse) {
+    const filterInputs = GraphqlResponseFormatter.getFilterInputs(filtersResponse)
+    const rangeFilter = filtersResponse.find((filter) => filter.type === "PRICE_RANGE")
     let price_ranges = {}
     if (rangeFilter) {
       price_ranges = JSON.parse(rangeFilter.values[0].input).price
@@ -109,7 +109,7 @@ class Base{
     let filtersForRequestParams = {}
     for (const [filterId, appliedFilterValues] of Object.entries(this.requestState.filters)) {
       // checkbox filter
-      const appliedFilter = response.search.filters.find((filter) => filter.id === filterId)
+      const appliedFilter = filtersResponse.find((filter) => filter.id === filterId)
       if (Array.isArray(appliedFilterValues)) {
         let formattedFilterValues = []
         appliedFilterValues.forEach((filterLabel) => {

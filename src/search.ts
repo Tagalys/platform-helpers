@@ -31,6 +31,9 @@ class Search extends Base{
         $reverse: Boolean,
         $productFilters:  [ProductFilter!],
         $product_metafields: [HasMetafieldsIdentifier!]!,
+        $prefix: SearchPrefixQueryType,
+        $unavailableProducts: SearchUnavailableProductsType,
+        $types: [SearchType!]
       ) @inContext(
           country: ${globalContext.configuration.getCountryCode()},
           language: ${globalContext.configuration.getLanguageCode()}
@@ -43,9 +46,12 @@ class Search extends Base{
           before: $before,
           reverse: $reverse,
           sortKey: $sortKey,
-          productFilters: $productFilters
+          productFilters: $productFilters,
+          prefix: $prefix,
+          unavailableProducts: $unavailableProducts,
+          types: $types,
         ){
-          query
+          totalCount
           edges{
             node{
               ... on Product{
@@ -78,6 +84,9 @@ class Search extends Base{
   getQueryVariables() {
     return {
       query: `${this.requestState.query}`,
+      unavailableProducts: this.requestState.unavailableProducts,
+      prefix: this.requestState.prefix,
+      types: this.requestState.types,
       ...this.getSortVariables(),
       ...this.getPaginationVariables(),
       ...this.getFilterVariables(),
@@ -142,12 +151,13 @@ class Search extends Base{
   formatResponse(requestOptions, shopifyResponse) {
     // handle empty node: {}
     return {
-      query: shopifyResponse.search.query,
+      query: this.requestState.query,
       products: shopifyResponse.search.edges.map((productEdge) => this.graphqlResponseFormatter.formatProduct(productEdge.node)),
       filters: this.graphqlResponseFormatter.formatFilters(shopifyResponse.search.filters, this.requestState.filters, this.responseState.price_ranges),
       sort_options: this.getSortOptions(requestOptions, DEFAULT_SORT_OPTIONS),
       page_info: shopifyResponse.search.pageInfo,
-      filter_inputs: GraphqlResponseFormatter.getFilterInputs(shopifyResponse.search.filters)
+      filter_inputs: GraphqlResponseFormatter.getFilterInputs(shopifyResponse.search.filters),
+      total: shopifyResponse.search.totalCount,
     }
   }
 
