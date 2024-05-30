@@ -1,4 +1,3 @@
-import { API_VERSION } from './lib/common';
 import GraphqlQueries from './lib/graphql-queries'
 import ShopifyAPI from './lib/shopifyApi'
 import GraphqlResponseFormatter from './lib/grapqhl-to-common-response-formatter';
@@ -59,7 +58,7 @@ class Base{
           })
         }
       }
-      filterVariables['productFilters'] = filtersToApply
+      filterVariables['filters'] = filtersToApply
     }
     return filterVariables
   }
@@ -110,20 +109,22 @@ class Base{
     for (const [filterId, appliedFilterValues] of Object.entries(this.requestState.filters)) {
       // checkbox filter
       const appliedFilter = filtersResponse.find((filter) => filter.id === filterId)
-      if (Array.isArray(appliedFilterValues)) {
-        let formattedFilterValues = []
-        appliedFilterValues.forEach((filterLabel) => {
-          if (appliedFilter.type === "LIST" || appliedFilter.type === "BOOLEAN") {
-            appliedFilter.values.forEach((filterValue) => {
-              if (filterLabel === filterValue.label) {
-                formattedFilterValues.push(filterValue.id)
-              }
-            })
-          }
-        })
-        filtersForRequestParams[filterId] = formattedFilterValues
-      } else {
-        filtersForRequestParams[filterId] = appliedFilterValues
+      if (appliedFilter) {
+        if (Array.isArray(appliedFilterValues)) {
+          let formattedFilterValues = []
+          appliedFilterValues.forEach((filterLabel) => {
+            if (appliedFilter.type === "LIST" || appliedFilter.type === "BOOLEAN") {
+              appliedFilter.values.forEach((filterValue) => {
+                if (filterLabel === filterValue.label) {
+                  formattedFilterValues.push(filterValue.id)
+                }
+              })
+            }
+          })
+          filtersForRequestParams[filterId] = formattedFilterValues
+        } else {
+          filtersForRequestParams[filterId] = appliedFilterValues
+        }
       }
     }
 
