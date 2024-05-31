@@ -14,8 +14,8 @@ export default {
   },
   apiClient: () => new ShopifyAPI(),
   ...TagalysToCommonResponseFormatter.export(),
+  ...ProductListingPage.export(),
   ...SearchSuggestions.export(),
   ...Search.export(),
-  ...ProductListingPage.export(),
   ...MultiMarket.export()
 }
