@@ -91,11 +91,6 @@ class Base{
     return sortOptions
   }
 
-  getQuery() {}
-  getQueryVariables() { }
-  formatResponse(requestOptions, shopifyResponse) { }
-  getDataForInitialRequest(requestOptions) { }
-
   getFilterData(filtersResponse) {
     const filterInputs = GraphqlResponseFormatter.getFilterInputs(filtersResponse)
     const rangeFilter = filtersResponse.find((filter) => filter.type === "PRICE_RANGE")
@@ -134,15 +129,6 @@ class Base{
     }
   }
 
-  helpersToExpose() {
-    return {
-      getQuery: () => this.getQuery(),
-      getQueryVariables: () => this.getQueryVariables(),
-      formatResponse: (requestOptions, shopifyResponse) => this.formatResponse(requestOptions, shopifyResponse),
-      getFilterInputs: (filtersFromResponse) => GraphqlResponseFormatter.getFilterInputs(filtersFromResponse),
-      getDataForInitialRequest: (requestOptions) => this.getDataForInitialRequest(requestOptions),
-    }
-  }
 }
 
 export default Base

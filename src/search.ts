@@ -161,6 +161,16 @@ class Search extends Base{
     }
   }
 
+  helpersToExpose() {
+    return {
+      getQuery: () => this.getQuery(),
+      getQueryVariables: () => this.getQueryVariables(),
+      formatResponse: (requestOptions, shopifyResponse) => this.formatResponse(requestOptions, shopifyResponse),
+      getFilterInputs: (filtersFromResponse) => GraphqlResponseFormatter.getFilterInputs(filtersFromResponse),
+      getDataForInitialRequest: (requestOptions) => this.getDataForInitialRequest(requestOptions),
+    }
+  }
+
   static export() {
     return {
       Search: {
