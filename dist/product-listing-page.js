@@ -1,4 +1,19 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -47,11 +62,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var common_1 = require("./lib/common");
 var graphql_queries_1 = require("./lib/graphql-queries");
-var shopifyApi_1 = require("./lib/shopifyApi");
 var grapqhl_to_common_response_formatter_1 = require("./lib/grapqhl-to-common-response-formatter");
 var global_context_1 = require("./lib/global-context");
+var product_listing_page_base_1 = require("./product-listing-page-base");
 var DEFAULT_SORT_OPTIONS = [
     {
         "id": "manual",
@@ -86,13 +100,17 @@ var DEFAULT_SORT_OPTIONS = [
         "label": "Date, new to old"
     }
 ];
-var ProductListingPage = /** @class */ (function () {
-    function ProductListingPage(requestState, responseState) {
-        this.requestState = requestState;
-        this.responseState = responseState;
-        this.queries = new graphql_queries_1.default();
-        this.graphqlResponseFormatter = new grapqhl_to_common_response_formatter_1.default();
+var ProductListingPage = /** @class */ (function (_super) {
+    __extends(ProductListingPage, _super);
+    function ProductListingPage() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
+    ProductListingPage.prototype.getQuery = function () {
+        return "\n      query Collection(\n        $id: ID,\n        $first: Int,\n        $last: Int,\n        $before: String,\n        $after: String,\n        $sortKey: ProductCollectionSortKeys,\n        $reverse: Boolean,\n        $filters: [ProductFilter!],\n        $product_metafields: [HasMetafieldsIdentifier!]!,\n      ) @inContext(country: ".concat(global_context_1.default.configuration.getCountryCode(), ") {\n        collection(id: $id){\n          title\n          handle\n          products(first: $first, last: $last, after: $after, before: $before, sortKey: $sortKey, reverse: $reverse, filters: $filters) {\n            filters {\n              id\n              label\n              type\n              values {\n                id\n                label\n                count\n                input\n              }\n            }\n            edges{\n              node{\n                ").concat(this.queries.getProductDetails(), "\n              }\n            }\n            pageInfo{\n              hasNextPage\n              hasPreviousPage\n              endCursor\n              startCursor\n            }\n          }\n        }\n      }\n    ");
+    };
+    ProductListingPage.prototype.getQueryVariables = function () {
+        return __assign(__assign(__assign(__assign({ id: "gid://shopify/Collection/".concat(this.requestState.product_listing_page_id) }, this.getSortVariables()), this.getPaginationVariables()), this.getFilterVariables()), this.getMetafieldVariables());
+    };
     ProductListingPage.prototype.getSortVariables = function () {
         var sortOptionToSortKeyMap = {
             'manual': {
@@ -138,110 +156,14 @@ var ProductListingPage = /** @class */ (function () {
         };
         return sortOptionToSortKeyMap[this.requestState.sort];
     };
-    ProductListingPage.prototype.getPaginationVariables = function () {
-        var paginationVariables = {};
-        if (this.requestState.endCursor) {
-            paginationVariables['after'] = this.requestState.endCursor;
-            paginationVariables['first'] = this.requestState.perPage;
-        }
-        if (this.requestState.startCursor) {
-            paginationVariables['before'] = this.requestState.startCursor;
-            paginationVariables['last'] = this.requestState.perPage;
-        }
-        if (!this.requestState.startCursor && !this.requestState.endCursor) {
-            paginationVariables['first'] = this.requestState.perPage;
-        }
-        return paginationVariables;
-    };
-    ProductListingPage.prototype.getFilterVariables = function () {
-        var _this = this;
-        var filterVariables = {};
-        if (Object.keys(this.requestState.filters).length) {
-            var filtersToApply_1 = [];
-            for (var _i = 0, _a = Object.entries(this.requestState.filters); _i < _a.length; _i++) {
-                var _b = _a[_i], _ = _b[0], filterValues = _b[1];
-                var values = filterValues;
-                if (filterValues.hasOwnProperty("selected_min")) {
-                    filtersToApply_1.push({
-                        price: {
-                            min: parseFloat(filterValues['selected_min']),
-                            max: parseFloat(filterValues['selected_max'])
-                        }
-                    });
-                }
-                else {
-                    values.forEach(function (filterValue) {
-                        if (_this.responseState.filter_inputs && _this.responseState.filter_inputs[filterValue]) {
-                            var selectedFilterValue = _this.responseState.filter_inputs[filterValue];
-                            filtersToApply_1.push(JSON.parse(selectedFilterValue.input));
-                        }
-                    });
-                }
-            }
-            filterVariables['filters'] = filtersToApply_1;
-        }
-        return filterVariables;
-    };
-    ProductListingPage.prototype.getMetafieldVariables = function () {
-        if (!global_context_1.default.shopifyConfiguration.hasMetafields()) {
-            return {
-                product_metafields: [],
-            };
-        }
-        var metafieldsToQuery = global_context_1.default.shopifyConfiguration.getMetafields();
-        return {
-            product_metafields: (metafieldsToQuery.products || []),
-        };
-    };
-    ProductListingPage.prototype.getQueryVariables = function () {
-        return __assign(__assign(__assign(__assign({ id: "gid://shopify/Collection/".concat(this.requestState.product_listing_page_id) }, this.getSortVariables()), this.getPaginationVariables()), this.getFilterVariables()), this.getMetafieldVariables());
-    };
-    ProductListingPage.prototype.getQuery = function () {
-        return "\n      query Collection(\n        $id: ID,\n        $first: Int,\n        $last: Int,\n        $before: String,\n        $after: String,\n        $sortKey: ProductCollectionSortKeys,\n        $reverse: Boolean,\n        $filters: [ProductFilter!],\n        $product_metafields: [HasMetafieldsIdentifier!]!,\n      ) @inContext(country: ".concat(global_context_1.default.configuration.getCountryCode(), ") {\n        collection(id: $id){\n          title\n          handle\n          products(first: $first, last: $last, after: $after, before: $before, sortKey: $sortKey, reverse: $reverse, filters: $filters) {\n            filters {\n              id\n              label\n              type\n              values {\n                id\n                label\n                count\n                input\n              }\n            }\n            edges{\n              node{\n                ").concat(this.queries.getProductDetails(), "\n              }\n            }\n            pageInfo{\n              hasNextPage\n              hasPreviousPage\n              endCursor\n              startCursor\n            }\n          }\n        }\n      }\n    ");
-    };
     ProductListingPage.getFilterInputsQuery = function () {
         return "\n    query Collection(\n      $id: ID,\n    ) {\n      collection(id: $id){\n        products(first: 1) {\n          ".concat(graphql_queries_1.default.getFilters(), "\n        }\n      }\n    }\n    ");
     };
-    ProductListingPage.prototype.getRequestOptions = function () {
-        return {
-            path: "graphql.json",
-            apiVersion: common_1.API_VERSION
-        };
-    };
-    ProductListingPage.prototype.getSortOptions = function (requestOptions) {
-        var _this = this;
-        var sortOptions = (requestOptions.params.sort_options || DEFAULT_SORT_OPTIONS);
-        sortOptions.forEach(function (sortOption) {
-            if (sortOption.id === _this.requestState.sort) {
-                sortOption.selected = true;
-            }
-            else {
-                sortOption.selected = false;
-            }
-        });
-        if (this.requestState.sort === null && sortOptions.length > 0) {
-            sortOptions[0].selected = true;
-        }
-        return sortOptions;
-    };
-    ProductListingPage.prototype.formatResponse = function (requestOptions, shopifyResponse) {
-        return {
-            name: shopifyResponse.collection.title,
-            products: this.graphqlResponseFormatter.formatProducts(shopifyResponse.collection.products),
-            filters: this.graphqlResponseFormatter.formatFilters(shopifyResponse.collection.products.filters, this.requestState.filters, this.responseState.price_ranges),
-            sort_options: this.getSortOptions(requestOptions),
-            page_info: shopifyResponse.collection.products.pageInfo,
-            filter_inputs: grapqhl_to_common_response_formatter_1.default.getFilterInputs(shopifyResponse.collection.products.filters)
-        };
-    };
-    ProductListingPage.prototype.apiClient = function () {
-        return new shopifyApi_1.default();
-    };
     ProductListingPage.prototype.getDataForInitialRequest = function (requestOptions) {
         return __awaiter(this, void 0, void 0, function () {
-            var filterInputsQuery, response, filterInputs, rangeFilter, price_ranges, filtersForRequestParams, _loop_1, _i, _a, _b, filterId, appliedFilterValues;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            var filterInputsQuery, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
                         filterInputsQuery = ProductListingPage.getFilterInputsQuery();
                         return [4 /*yield*/, this.apiClient().call("POST", "graphql.json", {
@@ -253,55 +175,20 @@ var ProductListingPage = /** @class */ (function () {
                                 })
                             })];
                     case 1:
-                        response = _c.sent();
-                        filterInputs = grapqhl_to_common_response_formatter_1.default.getFilterInputs(response.collection.products.filters);
-                        rangeFilter = response.collection.products.filters.find(function (filter) { return filter.type === "PRICE_RANGE"; });
-                        price_ranges = {};
-                        if (rangeFilter) {
-                            price_ranges = JSON.parse(rangeFilter.values[0].input).price;
-                        }
-                        filtersForRequestParams = {};
-                        _loop_1 = function (filterId, appliedFilterValues) {
-                            // checkbox filter
-                            var appliedFilter = response.collection.products.filters.find(function (filter) { return filter.id === filterId; });
-                            if (Array.isArray(appliedFilterValues)) {
-                                var formattedFilterValues_1 = [];
-                                appliedFilterValues.forEach(function (filterLabel) {
-                                    if (appliedFilter.type === "LIST" || appliedFilter.type === "BOOLEAN") {
-                                        appliedFilter.values.forEach(function (filterValue) {
-                                            if (filterLabel === filterValue.label) {
-                                                formattedFilterValues_1.push(filterValue.id);
-                                            }
-                                        });
-                                    }
-                                });
-                                filtersForRequestParams[filterId] = formattedFilterValues_1;
-                            }
-                            else {
-                                filtersForRequestParams[filterId] = appliedFilterValues;
-                            }
-                        };
-                        for (_i = 0, _a = Object.entries(this.requestState.filters); _i < _a.length; _i++) {
-                            _b = _a[_i], filterId = _b[0], appliedFilterValues = _b[1];
-                            _loop_1(filterId, appliedFilterValues);
-                        }
-                        return [2 /*return*/, {
-                                filtersForRequestParams: filtersForRequestParams,
-                                filter_inputs: filterInputs,
-                                price_ranges: price_ranges
-                            }];
+                        response = _a.sent();
+                        return [2 /*return*/, this.getFilterData(response.collection.products.filters)];
                 }
             });
         });
     };
-    ProductListingPage.prototype.helpersToExpose = function () {
-        var _this = this;
+    ProductListingPage.prototype.formatResponse = function (requestOptions, shopifyResponse) {
         return {
-            getQuery: function () { return _this.getQuery(); },
-            getQueryVariables: function () { return _this.getQueryVariables(); },
-            formatResponse: function (requestOptions, shopifyResponse) { return _this.formatResponse(requestOptions, shopifyResponse); },
-            getFilterInputs: function (filtersFromResponse) { return grapqhl_to_common_response_formatter_1.default.getFilterInputs(filtersFromResponse); },
-            getDataForInitialRequest: function (requestOptions) { return _this.getDataForInitialRequest(requestOptions); },
+            name: shopifyResponse.collection.title,
+            products: this.graphqlResponseFormatter.formatProducts(shopifyResponse.collection.products),
+            filters: this.graphqlResponseFormatter.formatFilters(shopifyResponse.collection.products.filters, this.requestState.filters, this.responseState.price_ranges),
+            sort_options: this.getSortOptions(requestOptions, DEFAULT_SORT_OPTIONS),
+            page_info: shopifyResponse.collection.products.pageInfo,
+            filter_inputs: grapqhl_to_common_response_formatter_1.default.getFilterInputs(shopifyResponse.collection.products.filters)
         };
     };
     ProductListingPage.export = function () {
@@ -316,6 +203,6 @@ var ProductListingPage = /** @class */ (function () {
         };
     };
     return ProductListingPage;
-}());
+}(product_listing_page_base_1.default));
 exports.default = ProductListingPage;
 //# sourceMappingURL=product-listing-page.js.map

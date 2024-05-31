@@ -18,22 +18,22 @@ var global_context_1 = require("./lib/global-context");
 var SearchSuggestions = /** @class */ (function () {
     function SearchSuggestions(requestState, responseState) {
         var _this = this;
-        this.getSearchSuggestionsQuery = function (requestedTypes) {
+        this.getSearchSuggestionsQuery = function (resourcesToRequest) {
             var query = '';
-            if (requestedTypes.includes('queries')) {
+            if (resourcesToRequest.includes('queries')) {
                 query += "\n        queries {\n          text\n        }\n      ";
             }
-            if (requestedTypes.includes('collections')) {
-                query += "\n        collections {\n          id\n          title\n          handle\n          onlineStoreURL\n        }\n      ";
+            if (resourcesToRequest.includes('collections')) {
+                query += "\n        collections {\n          id\n          title\n          onlineStoreUrl\n        }\n      ";
             }
-            if (requestedTypes.includes('products')) {
+            if (resourcesToRequest.includes('products')) {
                 query += "\n        products {\n          ".concat(_this.queries.getProductDetails(), "\n        }\n      ");
             }
-            if (requestedTypes.includes('pages')) {
-                query += "\n        pages {\n          id\n          title\n          handle\n        }\n      ";
+            if (resourcesToRequest.includes('pages')) {
+                query += "\n        pages {\n          id\n          title\n          onlineStoreUrl\n        }\n      ";
             }
-            if (requestedTypes.includes('articles')) {
-                query += "\n        articles {\n          id\n          title\n          authorV2{\n            name\n          }\n          tags\n          handle\n        }\n      ";
+            if (resourcesToRequest.includes('articles')) {
+                query += "\n        articles {\n          id\n          title\n          onlineStoreUrl\n        }\n      ";
             }
             return query;
         };
@@ -42,6 +42,27 @@ var SearchSuggestions = /** @class */ (function () {
         this.queries = new graphql_queries_1.default();
         this.graphqlResponseFormatter = new grapqhl_to_common_response_formatter_1.default();
     }
+    SearchSuggestions.prototype.getQuery = function () {
+        var _a, _b;
+        var _c = this.validateRequest(), valid = _c.valid, message = _c.message;
+        if (!valid) {
+            throw new Error(message);
+        }
+        var resourcesToRequest = this.getResourcesToRequest();
+        var query = this.getSearchSuggestionsQuery(resourcesToRequest);
+        var isProductRequested = resourcesToRequest.includes('products');
+        var isSearchableFieldsProvided = (((_b = (_a = this.requestState.params) === null || _a === void 0 ? void 0 : _a.searchableFields) === null || _b === void 0 ? void 0 : _b.length) > 0);
+        return "\n      query SearchSuggestions(\n        $query: String!,\n        $types: [PredictiveSearchType!],\n        ".concat(isProductRequested ? '$product_metafields: [HasMetafieldsIdentifier!]!' : '', ",\n        ").concat(isSearchableFieldsProvided ? "$searchableFields: '[SearchableField!]" : '', "\n      ) @inContext(\n          country: ").concat(global_context_1.default.configuration.getCountryCode(), ",\n          language: ").concat(global_context_1.default.configuration.getLanguageCode(), "\n        ){\n        predictiveSearch(\n          query: $query,\n          limitScope: EACH,\n          limit: 10,\n          unavailableProducts: ").concat(this.requestState.params.unavailableProducts, ",\n          ").concat(isSearchableFieldsProvided ? "searchableFields: $searchableFields" : '', ",\n          types: $types\n        ){\n          ").concat(query, "\n        }\n      }\n    ");
+    };
+    SearchSuggestions.prototype.getQueryVariables = function () {
+        var _this = this;
+        var _a, _b;
+        var queryVariables = __assign({ query: "".concat(this.requestState.params.query), types: this.getResourcesToRequest().map(function (resource) { return _this.getSearchableResourceType(resource); }) }, this.getMetafieldVariables());
+        if (((_b = (_a = this.requestState.params) === null || _a === void 0 ? void 0 : _a.searchableFields) === null || _b === void 0 ? void 0 : _b.length) > 0) {
+            queryVariables.searchableFields = this.requestState.params.searchableFields;
+        }
+        return queryVariables;
+    };
     SearchSuggestions.prototype.getMetafieldVariables = function () {
         if (!global_context_1.default.shopifyConfiguration.hasMetafields()) {
             return {
@@ -53,90 +74,103 @@ var SearchSuggestions = /** @class */ (function () {
             product_metafields: (metafieldsToQuery.products || []),
         };
     };
-    SearchSuggestions.prototype.getQueryVariables = function () {
-        return __assign({ query: "".concat(this.requestState.params.query) }, this.getMetafieldVariables());
+    SearchSuggestions.prototype.getSearchableResourceType = function (resource) {
+        switch (resource) {
+            case 'collections':
+                return 'COLLECTION';
+            case 'products':
+                return 'PRODUCT';
+            case 'pages':
+                return 'PAGE';
+            case 'articles':
+                return 'ARTICLE';
+            case 'queries':
+                return 'QUERY';
+        }
     };
     SearchSuggestions.prototype.validateRequest = function () {
         // validate only queries, collections, products, pages, articles are requested
-        var allowedRequestTypes = ['queries', 'collections', 'products', 'pages', 'articles'];
-        var requestedTypes = Object.keys(this.requestState.params.request);
-        var hasRequestedAllowedTypes = requestedTypes.every(function (type) { return allowedRequestTypes.includes(type); });
+        var allowedResources = ['queries', 'collections', 'products', 'pages', 'articles'];
+        var requestedResources = this.getResourcesToRequest();
+        var hasRequestedAllowedTypes = requestedResources.every(function (type) { return allowedResources.includes(type); });
         return {
             valid: hasRequestedAllowedTypes,
-            message: "Invalid request type requested, allowed types are ".concat(allowedRequestTypes.join(', '))
+            message: hasRequestedAllowedTypes ? '' : "Invalid request type requested, allowed types are ".concat(allowedResources.join(', '))
         };
     };
-    SearchSuggestions.prototype.getQuery = function () {
-        var _a = this.validateRequest(), valid = _a.valid, message = _a.message;
-        if (!valid) {
-            throw new Error(message);
-        }
-        var requestedTypes = Object.keys(this.requestState.params.request);
-        var query = this.getSearchSuggestionsQuery(requestedTypes);
-        return "\n      query SearchSuggestions(\n        $query: String!,\n        $product_metafields: [HasMetafieldsIdentifier!]!,\n      ) @inContext(\n          country: ".concat(global_context_1.default.configuration.getCountryCode(), ",\n          language: ").concat(global_context_1.default.configuration.getLanguageCode(), "\n        ){\n        predictiveSearch(query: $query, limitScope: EACH, limit: 10){\n          ").concat(query, "\n        }\n      }\n    ");
+    SearchSuggestions.prototype.getResourcesToRequest = function () {
+        return Object.keys(this.requestState.params.request);
     };
     SearchSuggestions.prototype.formatResponse = function (_, shopifyResponse) {
         var _this = this;
-        var _a, _b, _c, _d;
         var response = {
             queries: [],
             products: [],
         };
         var shopifyResponseData = shopifyResponse.predictiveSearch;
-        if (((_a = shopifyResponseData === null || shopifyResponseData === void 0 ? void 0 : shopifyResponseData.collections) === null || _a === void 0 ? void 0 : _a.length) > 0) {
-            var thisSection = {
-                section_id: "collections",
-                section_title: "Collections",
-                items: shopifyResponseData.collections.map(function (collection) {
-                    return {
-                        displayString: collection.title,
-                        handle: collection.handle,
-                        url: collection.onlineStoreURL,
+        var resourcesToRequest = this.getResourcesToRequest();
+        resourcesToRequest.forEach(function (resource) {
+            var limit = _this.requestState.params.request[resource].limit;
+            switch (resource) {
+                case "queries": {
+                    var thisSection = {
+                        section_id: "queries",
+                        section_title: "Queries",
+                        items: shopifyResponseData.queries.slice(0, limit).map(function (query) { return ({
+                            displayString: query.text,
+                            queryString: "".concat(_this.requestState.queryStringConfiguration.queryParameter, "=").concat(query.text),
+                        }); }),
                     };
-                })
-            };
-            response.queries.push(thisSection);
-        }
-        if (((_b = shopifyResponseData === null || shopifyResponseData === void 0 ? void 0 : shopifyResponseData.pages) === null || _b === void 0 ? void 0 : _b.length) > 0) {
-            var thisSection = {
-                section_id: "pages",
-                section_title: "Pages",
-                items: shopifyResponseData.pages.map(function (page) {
-                    return {
-                        displayString: page.title,
-                        handle: page.handle,
-                        url: page.onlineStoreURL,
+                    response.queries.push(thisSection);
+                    break;
+                }
+                case "collections": {
+                    var thisSection = {
+                        section_id: "collections",
+                        section_title: "Collections",
+                        items: shopifyResponseData.collections.slice(0, limit).map(function (collection) { return ({
+                            displayString: collection.title,
+                            link: collection.onlineStoreURL,
+                        }); }),
                     };
-                })
-            };
-            response.queries.push(thisSection);
-        }
-        if (((_c = shopifyResponseData === null || shopifyResponseData === void 0 ? void 0 : shopifyResponseData.articles) === null || _c === void 0 ? void 0 : _c.length) > 0) {
-            var thisSection = {
-                section_id: "articles",
-                section_title: "Articles",
-                items: shopifyResponseData.articles.map(function (article) {
-                    return {
-                        displayString: article.title,
-                        handle: article.handle,
-                        url: article.onlineStoreURL,
+                    response.queries.push(thisSection);
+                    break;
+                }
+                case "pages": {
+                    var thisSection = {
+                        section_id: "pages",
+                        section_title: "Pages",
+                        items: shopifyResponseData.pages.slice(0, limit).map(function (page) { return ({
+                            displayString: page.title,
+                            link: page.onlineStoreUrl,
+                        }); }),
                     };
-                })
-            };
-            response.queries || (response.queries = []);
-            response.queries.push(thisSection);
-        }
-        if (((_d = shopifyResponseData === null || shopifyResponseData === void 0 ? void 0 : shopifyResponseData.products) === null || _d === void 0 ? void 0 : _d.length) > 0) {
-            response.products = shopifyResponseData.products.map(function (product) { return _this.graphqlResponseFormatter.formatProduct(product); });
-        }
-        // if (shopifyResponseData.queries) {
-        //   response.queries = shopifyResponse.predictiveSearch.queries
-        // }
+                    response.queries.push(thisSection);
+                    break;
+                }
+                case "articles": {
+                    var thisSection = {
+                        section_id: "articles",
+                        section_title: "Articles",
+                        items: shopifyResponseData.articles.slice(0, limit).map(function (article) { return ({
+                            displayString: article.title,
+                            link: article.onlineStoreUrl,
+                        }); }),
+                    };
+                    response.queries.push(thisSection);
+                    break;
+                }
+                case "products": {
+                    response.products = shopifyResponseData.products.slice(0, limit).map(function (product) {
+                        return _this.graphqlResponseFormatter.formatProduct(product);
+                    });
+                    break;
+                }
+                default:
+                    break;
+            }
+        });
         return response;
-        // return {
-        //   name: shopifyResponse.collection.title,
-        //   products: this.graphqlResponseFormatter.formatProducts(shopifyResponse.collection.products),
-        // }
     };
     SearchSuggestions.prototype.apiClient = function () {
         return new shopifyApi_1.default();

@@ -1,72 +1,31 @@
-import ShopifyAPI from './lib/shopifyApi';
-declare class Search {
-    private requestState;
-    private responseState;
-    private queries;
-    private graphqlResponseFormatter;
-    constructor(requestState: any, responseState: any);
-    getSortVariables(): any;
-    getPaginationVariables(): {};
-    getFilterVariables(): {};
-    getMetafieldVariables(): {
-        product_metafields: any;
-    };
-    getQueryVariables(): any;
+import Base from "./product-listing-page-base";
+declare class Search extends Base {
     getQuery(): string;
+    getQueryVariables(): any;
+    getSortVariables(): any;
     static getFilterInputsQuery(): string;
-    getRequestOptions(): {
-        path: string;
-        apiVersion: string;
-    };
-    getSortOptions(requestOptions: any): any;
-    formatResponse(requestOptions: any, shopifyResponse: any): {
-        products: any;
-        filters: any;
-        sort_options: any;
-        page_info: any;
-        filter_inputs: {};
-    };
-    apiClient(): ShopifyAPI;
     getDataForInitialRequest(requestOptions: any): Promise<{
         filtersForRequestParams: {};
         filter_inputs: {};
         price_ranges: {};
     }>;
-    helpersToExpose(): {
-        getQuery: () => string;
-        getQueryVariables: () => any;
-        formatResponse: (requestOptions: any, shopifyResponse: any) => {
-            products: any;
-            filters: any;
-            sort_options: any;
-            page_info: any;
-            filter_inputs: {};
-        };
-        getFilterInputs: (filtersFromResponse: any) => {};
-        getDataForInitialRequest: (requestOptions: any) => Promise<{
-            filtersForRequestParams: {};
-            filter_inputs: {};
-            price_ranges: {};
-        }>;
+    formatResponse(requestOptions: any, shopifyResponse: any): {
+        query: any;
+        products: any;
+        filters: any;
+        sort_options: any;
+        page_info: any;
+        filter_inputs: {};
+        total: any;
     };
     static export(): {
         Search: {
             new: (requestState: any, responseState: any) => {
-                getQuery: () => string;
-                getQueryVariables: () => any;
-                formatResponse: (requestOptions: any, shopifyResponse: any) => {
-                    products: any;
-                    filters: any;
-                    sort_options: any;
-                    page_info: any;
-                    filter_inputs: {};
-                };
+                getQuery: () => void;
+                getQueryVariables: () => void;
+                formatResponse: (requestOptions: any, shopifyResponse: any) => void;
                 getFilterInputs: (filtersFromResponse: any) => {};
-                getDataForInitialRequest: (requestOptions: any) => Promise<{
-                    filtersForRequestParams: {};
-                    filter_inputs: {};
-                    price_ranges: {};
-                }>;
+                getDataForInitialRequest: (requestOptions: any) => void;
             };
         };
     };

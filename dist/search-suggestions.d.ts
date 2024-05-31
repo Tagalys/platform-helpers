@@ -5,37 +5,30 @@ declare class SearchSuggestions {
     private queries;
     private graphqlResponseFormatter;
     constructor(requestState: any, responseState: any);
+    getQuery(): string;
+    getQueryVariables(): any;
     getMetafieldVariables(): {
         product_metafields: any;
     };
-    getQueryVariables(): {
-        product_metafields: any;
-        query: string;
-    };
+    getSearchableResourceType(resource: any): "COLLECTION" | "PRODUCT" | "PAGE" | "ARTICLE" | "QUERY";
     validateRequest(): {
         valid: boolean;
         message: string;
     };
-    getQuery(): string;
-    getSearchSuggestionsQuery: (requestedTypes: any) => string;
+    getResourcesToRequest(): string[];
+    getSearchSuggestionsQuery: (resourcesToRequest: any) => string;
     formatResponse(_: any, shopifyResponse: any): any;
     apiClient(): ShopifyAPI;
     helpersToExpose(): {
         getQuery: () => string;
-        getQueryVariables: () => {
-            product_metafields: any;
-            query: string;
-        };
+        getQueryVariables: () => any;
         formatResponse: (requestOptions: any, shopifyResponse: any) => any;
     };
     static export(): {
         SearchSuggestions: {
             new: (requestState: any, responseState: any) => {
                 getQuery: () => string;
-                getQueryVariables: () => {
-                    product_metafields: any;
-                    query: string;
-                };
+                getQueryVariables: () => any;
                 formatResponse: (requestOptions: any, shopifyResponse: any) => any;
             };
         };

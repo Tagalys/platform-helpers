@@ -86,7 +86,7 @@ var getPriceDetails = function (product) {
     };
 };
 exports.getPriceDetails = getPriceDetails;
-exports.API_VERSION = '2023-04';
+exports.API_VERSION = '2024-04';
 exports.METAFIELD_TYPES = {
     LIST_PRODUCT_REFERENCE: 'list.product_reference',
     COLLECTION_REFERENCE: 'collection_reference',
@@ -94,6 +94,8 @@ exports.METAFIELD_TYPES = {
     LIST_SINGLE_LINE_TEXT_FIELD: "list.single_line_text_field",
     JSON: "json",
     RATING: "rating",
+    NUMBER_INTEGER: "number_integer",
+    BOOLEAN: "boolean"
 };
 var getIdFromGraphqlId = function (graphqlId) {
     var id = graphqlId.split("/").slice(-1)[0];

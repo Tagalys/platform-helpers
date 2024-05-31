@@ -22,5 +22,5 @@ exports.default = __assign(__assign(__assign(__assign(__assign({ globalContext: 
         set: function (opts) { return global_context_1.default.set(opts); },
         getConfiguration: function () { return global_context_1.default.getConfiguration(); },
         getShopifyConfiguration: function () { return global_context_1.default.getShopifyConfiguration(); },
-    }, apiClient: function () { return new shopifyApi_1.default(); } }, tagalys_to_common_response_formatter_1.default.export()), search_suggestions_1.default.export()), search_1.default.export()), product_listing_page_1.default.export()), multi_market_1.default.export());
+    }, apiClient: function () { return new shopifyApi_1.default(); } }, tagalys_to_common_response_formatter_1.default.export()), product_listing_page_1.default.export()), search_suggestions_1.default.export()), search_1.default.export()), multi_market_1.default.export());
 //# sourceMappingURL=index.js.map

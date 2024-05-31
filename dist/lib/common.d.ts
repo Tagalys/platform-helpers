@@ -19,7 +19,7 @@ export declare const getPriceDetails: (product: any) => {
     compare_at_price_max: number;
     variantPricesMap: {};
 };
-export declare const API_VERSION = "2023-04";
+export declare const API_VERSION = "2024-04";
 export declare const METAFIELD_TYPES: {
     LIST_PRODUCT_REFERENCE: string;
     COLLECTION_REFERENCE: string;
@@ -27,5 +27,7 @@ export declare const METAFIELD_TYPES: {
     LIST_SINGLE_LINE_TEXT_FIELD: string;
     JSON: string;
     RATING: string;
+    NUMBER_INTEGER: string;
+    BOOLEAN: string;
 };
 export declare const getIdFromGraphqlId: (graphqlId: any) => number;

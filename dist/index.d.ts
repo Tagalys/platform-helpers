@@ -6,53 +6,29 @@ declare const _default: {
             resetProductPrices: (response: any) => any;
         };
     };
-    ProductListingPage: {
-        new: (requestState: any, responseState: any) => {
-            getQuery: () => string;
-            getQueryVariables: () => any;
-            formatResponse: (requestOptions: any, shopifyResponse: any) => {
-                name: any;
-                products: any;
-                filters: any;
-                sort_options: any;
-                page_info: any;
-                filter_inputs: {};
-            };
-            getFilterInputs: (filtersFromResponse: any) => {};
-            getDataForInitialRequest: (requestOptions: any) => Promise<{
-                filtersForRequestParams: {};
-                filter_inputs: {};
-                price_ranges: {};
-            }>;
-        };
-    };
     Search: {
         new: (requestState: any, responseState: any) => {
-            getQuery: () => string;
-            getQueryVariables: () => any;
-            formatResponse: (requestOptions: any, shopifyResponse: any) => {
-                products: any;
-                filters: any;
-                sort_options: any;
-                page_info: any;
-                filter_inputs: {};
-            };
+            getQuery: () => void;
+            getQueryVariables: () => void;
+            formatResponse: (requestOptions: any, shopifyResponse: any) => void;
             getFilterInputs: (filtersFromResponse: any) => {};
-            getDataForInitialRequest: (requestOptions: any) => Promise<{
-                filtersForRequestParams: {};
-                filter_inputs: {};
-                price_ranges: {};
-            }>;
+            getDataForInitialRequest: (requestOptions: any) => void;
         };
     };
     SearchSuggestions: {
         new: (requestState: any, responseState: any) => {
             getQuery: () => string;
-            getQueryVariables: () => {
-                product_metafields: any;
-                query: string;
-            };
+            getQueryVariables: () => any;
             formatResponse: (requestOptions: any, shopifyResponse: any) => any;
+        };
+    };
+    ProductListingPage: {
+        new: (requestState: any, responseState: any) => {
+            getQuery: () => void;
+            getQueryVariables: () => void;
+            formatResponse: (requestOptions: any, shopifyResponse: any) => void;
+            getFilterInputs: (filtersFromResponse: any) => {};
+            getDataForInitialRequest: (requestOptions: any) => void;
         };
     };
     TagalysToCommonResponseFormatter: {

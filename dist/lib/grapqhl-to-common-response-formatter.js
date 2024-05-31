@@ -228,14 +228,16 @@ var GraphqlResponseFormatter = /** @class */ (function () {
                 };
             }
         }
-        if (type === common_1.METAFIELD_TYPES.LIST_SINGLE_LINE_TEXT_FIELD) {
+        if ([
+            common_1.METAFIELD_TYPES.LIST_SINGLE_LINE_TEXT_FIELD,
+            common_1.METAFIELD_TYPES.JSON,
+            common_1.METAFIELD_TYPES.RATING,
+            common_1.METAFIELD_TYPES.BOOLEAN,
+        ].includes(type)) {
             value = JSON.parse(value);
         }
-        if (type === common_1.METAFIELD_TYPES.JSON) {
-            value = JSON.parse(value);
-        }
-        if (type === common_1.METAFIELD_TYPES.RATING) {
-            value = JSON.parse(value);
+        if (type === common_1.METAFIELD_TYPES.NUMBER_INTEGER) {
+            value = parseInt(value);
         }
         return {
             type: type,
