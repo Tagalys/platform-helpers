@@ -93,7 +93,7 @@ export const getPriceDetails = (product) => {
   }
 }
 
-export const API_VERSION = '2023-04'
+export const API_VERSION = '2024-04'
 
 export const METAFIELD_TYPES = {
   LIST_PRODUCT_REFERENCE: 'list.product_reference',
@@ -102,6 +102,8 @@ export const METAFIELD_TYPES = {
   LIST_SINGLE_LINE_TEXT_FIELD: "list.single_line_text_field",
   JSON: "json",
   RATING: "rating",
+  NUMBER_INTEGER: "number_integer",
+  BOOLEAN: "boolean"
 }
 
 export const getIdFromGraphqlId = (graphqlId) => {
