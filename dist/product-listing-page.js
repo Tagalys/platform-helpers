@@ -191,6 +191,16 @@ var ProductListingPage = /** @class */ (function (_super) {
             filter_inputs: grapqhl_to_common_response_formatter_1.default.getFilterInputs(shopifyResponse.collection.products.filters)
         };
     };
+    ProductListingPage.prototype.helpersToExpose = function () {
+        var _this = this;
+        return {
+            getQuery: function () { return _this.getQuery(); },
+            getQueryVariables: function () { return _this.getQueryVariables(); },
+            formatResponse: function (requestOptions, shopifyResponse) { return _this.formatResponse(requestOptions, shopifyResponse); },
+            getFilterInputs: function (filtersFromResponse) { return grapqhl_to_common_response_formatter_1.default.getFilterInputs(filtersFromResponse); },
+            getDataForInitialRequest: function (requestOptions) { return _this.getDataForInitialRequest(requestOptions); },
+        };
+    };
     ProductListingPage.export = function () {
         var _this = this;
         return {

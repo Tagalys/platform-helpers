@@ -85,10 +85,6 @@ var Base = /** @class */ (function () {
         }
         return sortOptions;
     };
-    Base.prototype.getQuery = function () { };
-    Base.prototype.getQueryVariables = function () { };
-    Base.prototype.formatResponse = function (requestOptions, shopifyResponse) { };
-    Base.prototype.getDataForInitialRequest = function (requestOptions) { };
     Base.prototype.getFilterData = function (filtersResponse) {
         var filterInputs = grapqhl_to_common_response_formatter_1.default.getFilterInputs(filtersResponse);
         var rangeFilter = filtersResponse.find(function (filter) { return filter.type === "PRICE_RANGE"; });
@@ -127,16 +123,6 @@ var Base = /** @class */ (function () {
             filtersForRequestParams: filtersForRequestParams,
             filter_inputs: filterInputs,
             price_ranges: price_ranges
-        };
-    };
-    Base.prototype.helpersToExpose = function () {
-        var _this = this;
-        return {
-            getQuery: function () { return _this.getQuery(); },
-            getQueryVariables: function () { return _this.getQueryVariables(); },
-            formatResponse: function (requestOptions, shopifyResponse) { return _this.formatResponse(requestOptions, shopifyResponse); },
-            getFilterInputs: function (filtersFromResponse) { return grapqhl_to_common_response_formatter_1.default.getFilterInputs(filtersFromResponse); },
-            getDataForInitialRequest: function (requestOptions) { return _this.getDataForInitialRequest(requestOptions); },
         };
     };
     return Base;

@@ -146,6 +146,16 @@ var Search = /** @class */ (function (_super) {
             total: shopifyResponse.search.totalCount,
         };
     };
+    Search.prototype.helpersToExpose = function () {
+        var _this = this;
+        return {
+            getQuery: function () { return _this.getQuery(); },
+            getQueryVariables: function () { return _this.getQueryVariables(); },
+            formatResponse: function (requestOptions, shopifyResponse) { return _this.formatResponse(requestOptions, shopifyResponse); },
+            getFilterInputs: function (filtersFromResponse) { return grapqhl_to_common_response_formatter_1.default.getFilterInputs(filtersFromResponse); },
+            getDataForInitialRequest: function (requestOptions) { return _this.getDataForInitialRequest(requestOptions); },
+        };
+    };
     Search.export = function () {
         var _this = this;
         return {

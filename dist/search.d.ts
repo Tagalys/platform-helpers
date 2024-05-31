@@ -18,14 +18,45 @@ declare class Search extends Base {
         filter_inputs: {};
         total: any;
     };
+    helpersToExpose(): {
+        getQuery: () => string;
+        getQueryVariables: () => any;
+        formatResponse: (requestOptions: any, shopifyResponse: any) => {
+            query: any;
+            products: any;
+            filters: any;
+            sort_options: any;
+            page_info: any;
+            filter_inputs: {};
+            total: any;
+        };
+        getFilterInputs: (filtersFromResponse: any) => {};
+        getDataForInitialRequest: (requestOptions: any) => Promise<{
+            filtersForRequestParams: {};
+            filter_inputs: {};
+            price_ranges: {};
+        }>;
+    };
     static export(): {
         Search: {
             new: (requestState: any, responseState: any) => {
-                getQuery: () => void;
-                getQueryVariables: () => void;
-                formatResponse: (requestOptions: any, shopifyResponse: any) => void;
+                getQuery: () => string;
+                getQueryVariables: () => any;
+                formatResponse: (requestOptions: any, shopifyResponse: any) => {
+                    query: any;
+                    products: any;
+                    filters: any;
+                    sort_options: any;
+                    page_info: any;
+                    filter_inputs: {};
+                    total: any;
+                };
                 getFilterInputs: (filtersFromResponse: any) => {};
-                getDataForInitialRequest: (requestOptions: any) => void;
+                getDataForInitialRequest: (requestOptions: any) => Promise<{
+                    filtersForRequestParams: {};
+                    filter_inputs: {};
+                    price_ranges: {};
+                }>;
             };
         };
     };

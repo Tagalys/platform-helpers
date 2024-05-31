@@ -8,11 +8,23 @@ declare const _default: {
     };
     Search: {
         new: (requestState: any, responseState: any) => {
-            getQuery: () => void;
-            getQueryVariables: () => void;
-            formatResponse: (requestOptions: any, shopifyResponse: any) => void;
+            getQuery: () => string;
+            getQueryVariables: () => any;
+            formatResponse: (requestOptions: any, shopifyResponse: any) => {
+                query: any;
+                products: any;
+                filters: any;
+                sort_options: any;
+                page_info: any;
+                filter_inputs: {};
+                total: any;
+            };
             getFilterInputs: (filtersFromResponse: any) => {};
-            getDataForInitialRequest: (requestOptions: any) => void;
+            getDataForInitialRequest: (requestOptions: any) => Promise<{
+                filtersForRequestParams: {};
+                filter_inputs: {};
+                price_ranges: {};
+            }>;
         };
     };
     SearchSuggestions: {
@@ -24,11 +36,22 @@ declare const _default: {
     };
     ProductListingPage: {
         new: (requestState: any, responseState: any) => {
-            getQuery: () => void;
-            getQueryVariables: () => void;
-            formatResponse: (requestOptions: any, shopifyResponse: any) => void;
+            getQuery: () => string;
+            getQueryVariables: () => any;
+            formatResponse: (requestOptions: any, shopifyResponse: any) => {
+                name: any;
+                products: any;
+                filters: any;
+                sort_options: any;
+                page_info: any;
+                filter_inputs: {};
+            };
             getFilterInputs: (filtersFromResponse: any) => {};
-            getDataForInitialRequest: (requestOptions: any) => void;
+            getDataForInitialRequest: (requestOptions: any) => Promise<{
+                filtersForRequestParams: {};
+                filter_inputs: {};
+                price_ranges: {};
+            }>;
         };
     };
     TagalysToCommonResponseFormatter: {
