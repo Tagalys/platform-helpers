@@ -111,63 +111,65 @@ var SearchSuggestions = /** @class */ (function () {
         var resourcesToRequest = this.getResourcesToRequest();
         resourcesToRequest.forEach(function (resource) {
             var limit = _this.requestState.params.request[resource].limit;
-            switch (resource) {
-                case "queries": {
-                    var thisSection = {
-                        section_id: "queries",
-                        section_title: "Queries",
-                        items: shopifyResponseData.queries.slice(0, limit).map(function (query) { return ({
-                            displayString: query.text,
-                            queryString: "".concat(_this.requestState.queryStringConfiguration.queryParameter, "=").concat(query.text),
-                        }); }),
-                    };
-                    response.queries.push(thisSection);
-                    break;
+            if (shopifyResponseData[resource].length > 0) {
+                switch (resource) {
+                    case "queries": {
+                        var thisSection = {
+                            section_id: "queries",
+                            section_title: "Queries",
+                            items: shopifyResponseData.queries.slice(0, limit).map(function (query) { return ({
+                                displayString: query.text,
+                                queryString: "".concat(_this.requestState.queryStringConfiguration.queryParameter, "=").concat(query.text),
+                            }); }),
+                        };
+                        response.queries.push(thisSection);
+                        break;
+                    }
+                    case "collections": {
+                        var thisSection = {
+                            section_id: "collections",
+                            section_title: "Collections",
+                            items: shopifyResponseData.collections.slice(0, limit).map(function (collection) { return ({
+                                displayString: collection.title,
+                                link: collection.onlineStoreURL,
+                            }); }),
+                        };
+                        response.queries.push(thisSection);
+                        break;
+                    }
+                    case "pages": {
+                        var thisSection = {
+                            section_id: "pages",
+                            section_title: "Pages",
+                            items: shopifyResponseData.pages.slice(0, limit).map(function (page) { return ({
+                                displayString: page.title,
+                                link: page.onlineStoreUrl,
+                            }); }),
+                        };
+                        response.queries.push(thisSection);
+                        break;
+                    }
+                    case "articles": {
+                        var thisSection = {
+                            section_id: "articles",
+                            section_title: "Articles",
+                            items: shopifyResponseData.articles.slice(0, limit).map(function (article) { return ({
+                                displayString: article.title,
+                                link: article.onlineStoreUrl,
+                            }); }),
+                        };
+                        response.queries.push(thisSection);
+                        break;
+                    }
+                    case "products": {
+                        response.products = shopifyResponseData.products.slice(0, limit).map(function (product) {
+                            return _this.graphqlResponseFormatter.formatProduct(product);
+                        });
+                        break;
+                    }
+                    default:
+                        break;
                 }
-                case "collections": {
-                    var thisSection = {
-                        section_id: "collections",
-                        section_title: "Collections",
-                        items: shopifyResponseData.collections.slice(0, limit).map(function (collection) { return ({
-                            displayString: collection.title,
-                            link: collection.onlineStoreURL,
-                        }); }),
-                    };
-                    response.queries.push(thisSection);
-                    break;
-                }
-                case "pages": {
-                    var thisSection = {
-                        section_id: "pages",
-                        section_title: "Pages",
-                        items: shopifyResponseData.pages.slice(0, limit).map(function (page) { return ({
-                            displayString: page.title,
-                            link: page.onlineStoreUrl,
-                        }); }),
-                    };
-                    response.queries.push(thisSection);
-                    break;
-                }
-                case "articles": {
-                    var thisSection = {
-                        section_id: "articles",
-                        section_title: "Articles",
-                        items: shopifyResponseData.articles.slice(0, limit).map(function (article) { return ({
-                            displayString: article.title,
-                            link: article.onlineStoreUrl,
-                        }); }),
-                    };
-                    response.queries.push(thisSection);
-                    break;
-                }
-                case "products": {
-                    response.products = shopifyResponseData.products.slice(0, limit).map(function (product) {
-                        return _this.graphqlResponseFormatter.formatProduct(product);
-                    });
-                    break;
-                }
-                default:
-                    break;
             }
         });
         return response;
