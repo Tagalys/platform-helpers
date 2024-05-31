@@ -235,14 +235,16 @@ class GraphqlResponseFormatter {
         }
       }
     }
-    if (type === METAFIELD_TYPES.LIST_SINGLE_LINE_TEXT_FIELD) {
+    if ([
+      METAFIELD_TYPES.LIST_SINGLE_LINE_TEXT_FIELD,
+      METAFIELD_TYPES.JSON,
+      METAFIELD_TYPES.RATING,
+      METAFIELD_TYPES.BOOLEAN,
+    ].includes(type)) {
       value = JSON.parse(value)
     }
-    if (type === METAFIELD_TYPES.JSON) {
-      value = JSON.parse(value)
-    }
-    if (type === METAFIELD_TYPES.RATING) {
-      value = JSON.parse(value)
+    if (type === METAFIELD_TYPES.NUMBER_INTEGER) {
+      value = parseInt(value)
     }
     return {
       type: type,

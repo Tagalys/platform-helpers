@@ -85,7 +85,6 @@ class Base{
       }
     })
 
-    // this logic can be improved, by defining a 'default' key
     if(this.requestState.sort === null && sortOptions.length > 0){
       sortOptions[0].selected = true
     }
