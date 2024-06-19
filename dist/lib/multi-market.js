@@ -49,12 +49,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var common_1 = require("./common");
 var global_context_1 = require("./global-context");
+var grapqhl_to_common_response_formatter_1 = require("./grapqhl-to-common-response-formatter");
 var MultiMarket = /** @class */ (function () {
     function MultiMarket() {
     }
     MultiMarket.prototype.getProductDetailsForMarket = function (productIds) {
         return __awaiter(this, void 0, void 0, function () {
-            var productNodeIds, priceQuery, metafieldsToQuery, metafieldsQuery, identifier, response, responseJson, products, productDetailsForMarket;
+            var productNodeIds, priceQuery, productQuery, metafieldsToQuery, metafieldsQuery, identifier, countryContextQuery, languageContextQuery, response, responseJson, products, productDetailsForMarket;
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -63,14 +64,17 @@ var MultiMarket = /** @class */ (function () {
                             return [2 /*return*/, {}];
                         productNodeIds = productIds.map(function (productId) { return "gid://shopify/Product/".concat(productId); });
                         priceQuery = "\n      variants(first: 250){\n        edges{\n          node{\n            id\n            price {\n              amount\n            }\n            compareAtPrice{\n              amount\n            }\n          }\n        }\n      }\n    ";
+                        productQuery = "\n      id\n      title\n      handle\n      productType\n    ";
                         metafieldsToQuery = global_context_1.default.shopifyConfiguration.getMetafields();
                         metafieldsQuery = "";
                         if (Object.keys(metafieldsToQuery).length > 0) {
                             identifier = metafieldsToQuery.products.map(function (product_metafield) { return "{namespace: \"".concat(product_metafield.namespace, "\", key: \"").concat(product_metafield.key, "\"}"); });
-                            metafieldsQuery = "\n        metafields(identifiers: [".concat(identifier, "]){\n          id\n          key\n          namespace\n          type\n          value\n          reference{\n            ... on Collection{\n              products(first: 10){\n                edges{\n                  node{\n                    id\n                    ").concat(priceQuery, "\n                    metafields(identifiers: [").concat(identifier, "]){\n                      id\n                      key\n                      namespace\n                      type\n                      value\n                    }\n                  }\n                }\n              }\n            }\n          }\n          references(first: 10){\n            edges{\n              node{\n                ... on Product{\n                  id\n                  ").concat(priceQuery, "\n                  metafields(identifiers: [").concat(identifier, "]){\n                    id\n                    key\n                    namespace\n                    type\n                    value\n                  }\n                }\n              }\n            }\n          }\n        }\n      ");
+                            metafieldsQuery = "\n        metafields(identifiers: [".concat(identifier, "]){\n          id\n          key\n          namespace\n          type\n          value\n          reference{\n            ... on Collection{\n              products(first: 10){\n                edges{\n                  node{\n                    ").concat(productQuery, "\n                    ").concat(priceQuery, "\n                    metafields(identifiers: [").concat(identifier, "]){\n                      id\n                      key\n                      namespace\n                      type\n                      value\n                    }\n                  }\n                }\n              }\n            }\n          }\n          references(first: 10){\n            edges{\n              node{\n                ... on Product{\n                  ").concat(productQuery, "\n                  ").concat(priceQuery, "\n                  metafields(identifiers: [").concat(identifier, "]){\n                    id\n                    key\n                    namespace\n                    type\n                    value\n                  }\n                }\n              }\n            }\n          }\n        }\n      ");
                         }
+                        countryContextQuery = "country: ".concat(global_context_1.default.configuration.getCountryCode());
+                        languageContextQuery = global_context_1.default.configuration.getLanguageCode() ? ", language: ".concat(global_context_1.default.configuration.getLanguageCode()) : "";
                         return [4 /*yield*/, fetch("https://".concat(global_context_1.default.shopifyConfiguration.getMyShopifyDomain(), "/api/").concat(common_1.API_VERSION, "/graphql.json"), {
-                                body: " query allProducts @inContext(country: ".concat(global_context_1.default.configuration.getCountryCode(), ") {\n        nodes(ids: ").concat(JSON.stringify(productNodeIds), ")\n        {\n          ... on Product{\n            id\n            ").concat(metafieldsQuery, "\n            ").concat(priceQuery, "\n          }\n        }\n      }\n      "),
+                                body: " query allProducts @inContext(".concat(countryContextQuery).concat(languageContextQuery, ") {\n        nodes(ids: ").concat(JSON.stringify(productNodeIds), ")\n        {\n          ... on Product{\n            ").concat(productQuery, "\n            ").concat(metafieldsQuery, "\n            ").concat(priceQuery, "\n          }\n        }\n      }\n      "),
                                 headers: {
                                     "Content-Type": "application/graphql",
                                     "X-Shopify-Storefront-Access-Token": global_context_1.default.shopifyConfiguration.getStorefrontAPIAccessToken(),
@@ -111,7 +115,7 @@ var MultiMarket = /** @class */ (function () {
             });
         }
         var priceDetails = (0, common_1.getPriceDetails)(product);
-        return __assign(__assign({}, priceDetails), { productId: (0, common_1.getIdFromGraphqlId)(product.id), metafields: metafields });
+        return __assign(__assign({ title: product.title, handle: product.handle, productType: product.productType }, priceDetails), { productId: (0, common_1.getIdFromGraphqlId)(product.id), metafields: metafields });
     };
     MultiMarket.prototype.getMetafieldValue = function (metafield) {
         var _this = this;
@@ -132,9 +136,6 @@ var MultiMarket = /** @class */ (function () {
                     return _this.getMarketSpecificDetails(reference.node);
                 });
             }
-            // else {
-            //   value = JSON.parse(value)
-            // }
         }
         return value;
     };
@@ -161,6 +162,9 @@ var MultiMarket = /** @class */ (function () {
         });
     };
     MultiMarket.prototype.mutateProductDetails = function (product, marketSpecificProductDetails) {
+        product.title = marketSpecificProductDetails.title;
+        product.handle = marketSpecificProductDetails.handle;
+        product.product_type = marketSpecificProductDetails.productType;
         product.variants.forEach(function (variant) {
             variant.price = marketSpecificProductDetails.variantPricesMap[variant.id].price;
             variant.compare_at_price = marketSpecificProductDetails.variantPricesMap[variant.id].compare_at_price;
@@ -176,15 +180,25 @@ var MultiMarket = /** @class */ (function () {
         this.updateMetafieldPrices(product.metafields, marketSpecificProductDetails.metafields);
     };
     MultiMarket.prototype.updateMetafieldPrices = function (metafields, marketSpecificMetafields) {
+        var graphqlResponseFormatter = new grapqhl_to_common_response_formatter_1.default();
         for (var namespace in metafields) {
             for (var key in metafields[namespace]) {
                 if (marketSpecificMetafields.hasOwnProperty(namespace) && marketSpecificMetafields[namespace].hasOwnProperty(key)) {
                     var marketSpecificValue = marketSpecificMetafields[namespace][key].value;
-                    if (metafields[namespace][key]['type'] === common_1.METAFIELD_TYPES.COLLECTION_REFERENCE) {
-                        this.updateCollectionReferenceMetafield(metafields[namespace][key], marketSpecificValue);
-                    }
-                    if (metafields[namespace][key]['type'] === common_1.METAFIELD_TYPES.LIST_PRODUCT_REFERENCE) {
-                        this.updateProductListReferenceMetafield(metafields[namespace][key], marketSpecificValue);
+                    switch (metafields[namespace][key]['type']) {
+                        case common_1.METAFIELD_TYPES.COLLECTION_REFERENCE: {
+                            this.updateCollectionReferenceMetafield(metafields[namespace][key], marketSpecificValue);
+                            break;
+                        }
+                        case common_1.METAFIELD_TYPES.LIST_PRODUCT_REFERENCE: {
+                            this.updateProductListReferenceMetafield(metafields[namespace][key], marketSpecificValue);
+                            break;
+                        }
+                        default: {
+                            metafields[namespace][key].value = marketSpecificValue;
+                            metafields[namespace][key].value = graphqlResponseFormatter.formatMetafield(metafields[namespace][key], 0).value;
+                            break;
+                        }
                     }
                 }
                 else {
