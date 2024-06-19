@@ -1,5 +1,6 @@
 import { API_VERSION, getIdFromGraphqlId, getPriceDetails, METAFIELD_TYPES } from "./common";
 import globalContext from "./global-context";
+import GraphqlResponseFormatter from "./grapqhl-to-common-response-formatter";
 
 class MultiMarket {
   async getProductDetailsForMarket(productIds) {
@@ -24,6 +25,13 @@ class MultiMarket {
       }
     `
 
+    const productQuery = `
+      id
+      title
+      handle
+      productType
+    `
+
     const metafieldsToQuery = globalContext.shopifyConfiguration.getMetafields()
     let metafieldsQuery = ""
     if (Object.keys(metafieldsToQuery).length > 0) {
@@ -40,7 +48,7 @@ class MultiMarket {
               products(first: 10){
                 edges{
                   node{
-                    id
+                    ${productQuery}
                     ${priceQuery}
                     metafields(identifiers: [${identifier}]){
                       id
@@ -58,7 +66,7 @@ class MultiMarket {
             edges{
               node{
                 ... on Product{
-                  id
+                  ${productQuery}
                   ${priceQuery}
                   metafields(identifiers: [${identifier}]){
                     id
@@ -75,12 +83,16 @@ class MultiMarket {
       `
     }
 
+    // add language code to the query only if language code is present
+    const countryContextQuery = `country: ${globalContext.configuration.getCountryCode()}`
+    const languageContextQuery = globalContext.configuration.getLanguageCode() ? `, language: ${globalContext.configuration.getLanguageCode()}` : ""
+
     var response = await fetch(`https://${globalContext.shopifyConfiguration.getMyShopifyDomain()}/api/${API_VERSION}/graphql.json`, {
-      body: ` query allProducts @inContext(country: ${globalContext.configuration.getCountryCode()}) {
+      body: ` query allProducts @inContext(${countryContextQuery}${languageContextQuery}) {
         nodes(ids: ${JSON.stringify(productNodeIds)})
         {
           ... on Product{
-            id
+            ${productQuery}
             ${metafieldsQuery}
             ${priceQuery}
           }
@@ -123,6 +135,9 @@ class MultiMarket {
 
     const priceDetails = getPriceDetails(product)
     return {
+      title: product.title,
+      handle: product.handle,
+      productType: product.productType,
       ...priceDetails,
       productId: getIdFromGraphqlId(product.id),
       metafields: metafields
@@ -147,10 +162,7 @@ class MultiMarket {
         value = metafield.references.edges.map((reference) => {
           return this.getMarketSpecificDetails(reference.node)
         })
-      } 
-      // else {
-      //   value = JSON.parse(value)
-      // }
+      }
     }
     return value
   }
@@ -159,7 +171,6 @@ class MultiMarket {
     if (response.hasOwnProperty("products")) {
       const productIds = response.products.map((product) => product.id)
       let marketSpecificDetails = await this.getProductDetailsForMarket(productIds)
-      
       response.products.forEach((product) => {
         const hasMarketSpecificDetails = marketSpecificDetails.hasOwnProperty(product.id)
         hasMarketSpecificDetails ? this.mutateProductDetails(product, marketSpecificDetails[product.id]) : this.resetProductPrice(product)
@@ -169,6 +180,9 @@ class MultiMarket {
   }
 
   mutateProductDetails(product, marketSpecificProductDetails) {
+    product.title = marketSpecificProductDetails.title
+    product.handle = marketSpecificProductDetails.handle
+    product.product_type = marketSpecificProductDetails.productType
     product.variants.forEach((variant) => {
       variant.price = marketSpecificProductDetails.variantPricesMap[variant.id].price
       variant.compare_at_price = marketSpecificProductDetails.variantPricesMap[variant.id].compare_at_price
@@ -185,15 +199,25 @@ class MultiMarket {
   }
 
   updateMetafieldPrices(metafields, marketSpecificMetafields) {
+    let graphqlResponseFormatter = new GraphqlResponseFormatter()
     for (const namespace in metafields) {
       for (const key in metafields[namespace]) {
         if (marketSpecificMetafields.hasOwnProperty(namespace) && marketSpecificMetafields[namespace].hasOwnProperty(key)) {
           const marketSpecificValue = marketSpecificMetafields[namespace][key].value
-          if (metafields[namespace][key]['type'] === METAFIELD_TYPES.COLLECTION_REFERENCE) {
-            this.updateCollectionReferenceMetafield(metafields[namespace][key], marketSpecificValue)
-          }
-          if (metafields[namespace][key]['type'] === METAFIELD_TYPES.LIST_PRODUCT_REFERENCE) {
-            this.updateProductListReferenceMetafield(metafields[namespace][key], marketSpecificValue)
+          switch (metafields[namespace][key]['type']) {
+            case METAFIELD_TYPES.COLLECTION_REFERENCE: {
+              this.updateCollectionReferenceMetafield(metafields[namespace][key], marketSpecificValue)
+              break;
+            }
+            case METAFIELD_TYPES.LIST_PRODUCT_REFERENCE: {
+              this.updateProductListReferenceMetafield(metafields[namespace][key], marketSpecificValue)
+              break;
+            }
+            default: {
+              metafields[namespace][key].value = marketSpecificValue
+              metafields[namespace][key].value = graphqlResponseFormatter.formatMetafield(metafields[namespace][key], 0).value
+              break;
+            }
           }
         }else{
           delete metafields[namespace][key]
