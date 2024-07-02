@@ -110,3 +110,15 @@ export const getIdFromGraphqlId = (graphqlId) => {
   const id = graphqlId.split("/").slice(-1)[0]
   return parseInt(id)
 }
+
+export const getMetafieldsToQuery = () => {
+  if (!globalContext.shopifyConfiguration.hasMetafields()) {
+    return {
+      product_metafields: [],
+    }
+  }
+  const metafieldsToQuery = globalContext.shopifyConfiguration.getMetafields()
+  return {
+    product_metafields: (metafieldsToQuery.products || []),
+  }
+}
