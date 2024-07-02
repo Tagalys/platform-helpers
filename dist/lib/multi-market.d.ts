@@ -12,9 +12,6 @@ declare class MultiMarket {
         compare_at_price_min: number;
         compare_at_price_max: number;
         variantPricesMap: {};
-        title: any;
-        handle: any;
-        productType: any;
     };
     getMetafieldValue(metafield: any): any;
     updateProductDetailsForMarket(response: any): Promise<any>;

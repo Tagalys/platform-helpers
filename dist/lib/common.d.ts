@@ -31,3 +31,6 @@ export declare const METAFIELD_TYPES: {
     BOOLEAN: string;
 };
 export declare const getIdFromGraphqlId: (graphqlId: any) => number;
+export declare const getMetafieldsToQuery: () => {
+    product_metafields: any;
+};

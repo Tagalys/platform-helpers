@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getIdFromGraphqlId = exports.METAFIELD_TYPES = exports.API_VERSION = exports.getPriceDetails = exports.getMax = exports.getMin = exports.getProductPriceAndCompareAtPrice = exports.getVariantCompareAtPrices = exports.getVariantPrices = exports.applyCurrencyConversion = exports.unique = void 0;
+exports.getMetafieldsToQuery = exports.getIdFromGraphqlId = exports.METAFIELD_TYPES = exports.API_VERSION = exports.getPriceDetails = exports.getMax = exports.getMin = exports.getProductPriceAndCompareAtPrice = exports.getVariantCompareAtPrices = exports.getVariantPrices = exports.applyCurrencyConversion = exports.unique = void 0;
 var global_context_1 = require("./global-context");
 var unique = function (value, index, self) {
     return self.indexOf(value) === index;
@@ -102,4 +102,16 @@ var getIdFromGraphqlId = function (graphqlId) {
     return parseInt(id);
 };
 exports.getIdFromGraphqlId = getIdFromGraphqlId;
+var getMetafieldsToQuery = function () {
+    if (!global_context_1.default.shopifyConfiguration.hasMetafields()) {
+        return {
+            product_metafields: [],
+        };
+    }
+    var metafieldsToQuery = global_context_1.default.shopifyConfiguration.getMetafields();
+    return {
+        product_metafields: (metafieldsToQuery.products || []),
+    };
+};
+exports.getMetafieldsToQuery = getMetafieldsToQuery;
 //# sourceMappingURL=common.js.map

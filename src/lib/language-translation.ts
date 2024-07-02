@@ -5,7 +5,6 @@ import GraphqlResponseFormatter from "./grapqhl-to-common-response-formatter";
 
 class LanguageTranslation{
   public productIds
-  public metafields
   constructor(productIds) {
     this.productIds = productIds.map(
       (productId) => `gid://shopify/Product/${productId}`
