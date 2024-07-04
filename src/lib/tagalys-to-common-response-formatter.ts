@@ -140,7 +140,12 @@ class TagalysToCommonResponseFormatter {
             }
           }
           if (detail.metafields[namespace][key]['type'] === METAFIELD_TYPES.SINGLE_LINE_TEXT_FIELD) {
-            detail.metafields[namespace][key]['value'] = detail.metafields[namespace][key]['value'][0]
+            // if the value is an array, return 0th element, else return the value
+            if(Array.isArray(detail.metafields[namespace][key]['value'])){
+              detail.metafields[namespace][key]['value'] = detail.metafields[namespace][key]['value'][0]
+            } else {
+              detail.metafields[namespace][key]['value'] = detail.metafields[namespace][key]['value']
+            }
           }
         }else{
           delete detail.metafields[namespace][key]
