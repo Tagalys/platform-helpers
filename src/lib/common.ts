@@ -93,7 +93,7 @@ export const getPriceDetails = (product) => {
   }
 }
 
-export const API_VERSION = '2023-04'
+export const API_VERSION = '2024-04'
 
 export const METAFIELD_TYPES = {
   LIST_PRODUCT_REFERENCE: 'list.product_reference',
