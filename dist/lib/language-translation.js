@@ -66,7 +66,8 @@ var LanguageTranslation = /** @class */ (function () {
                     case 2:
                         responseJson = _a.sent();
                         graphqlResponseFormatter = new grapqhl_to_common_response_formatter_1.default();
-                        return [2 /*return*/, responseJson.data.nodes.map(function (product) {
+                        // product is null, if the product is not published to the storefront app
+                        return [2 /*return*/, responseJson.data.nodes.filter(function (product) { return product != null; }).map(function (product) {
                                 return graphqlResponseFormatter.formatProduct(product);
                             })];
                 }

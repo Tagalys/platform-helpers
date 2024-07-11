@@ -28,8 +28,8 @@ class LanguageTranslation{
     );
     const responseJson = await response.json();
     const graphqlResponseFormatter = new GraphqlResponseFormatter();
-
-    return responseJson.data.nodes.map((product) =>
+    // product is null, if the product is not published to the storefront app
+    return responseJson.data.nodes.filter((product) => product != null).map((product) =>
       graphqlResponseFormatter.formatProduct(product)
     );
   }
