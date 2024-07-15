@@ -47,6 +47,7 @@ var LanguageTranslation = /** @class */ (function () {
     LanguageTranslation.prototype.translate = function () {
         return __awaiter(this, void 0, void 0, function () {
             var response, responseJson, graphqlResponseFormatter;
+            var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, fetch("https://".concat(global_context_1.default.shopifyConfiguration.getMyShopifyDomain(), "/api/").concat(common_1.API_VERSION, "/graphql.json"), {
@@ -67,7 +68,12 @@ var LanguageTranslation = /** @class */ (function () {
                         responseJson = _a.sent();
                         graphqlResponseFormatter = new grapqhl_to_common_response_formatter_1.default();
                         // product is null, if the product is not published to the storefront app
-                        return [2 /*return*/, responseJson.data.nodes.filter(function (product) { return product != null; }).map(function (product) {
+                        return [2 /*return*/, responseJson.data.nodes.filter(function (product, index) {
+                                if (product === null) {
+                                    console.warn("Product with id: ".concat((0, common_1.getIdFromGraphqlId)(_this.productIds[index]), " is not published to the storefront app"));
+                                }
+                                return product !== null;
+                            }).map(function (product) {
                                 return graphqlResponseFormatter.formatProduct(product);
                             })];
                 }
