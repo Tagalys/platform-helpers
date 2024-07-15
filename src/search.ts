@@ -20,6 +20,7 @@ const DEFAULT_SORT_OPTIONS = [
 class Search extends Base{
 
   getQuery() {
+    const languageCode = globalContext.configuration.getLanguageCode()
     return `
       query Search(
         $query: String!,
@@ -36,7 +37,7 @@ class Search extends Base{
         $types: [SearchType!]
       ) @inContext(
           country: ${globalContext.configuration.getCountryCode()},
-          language: ${globalContext.configuration.getLanguageCode()}
+          ${languageCode ? `language: ${languageCode}` : ''}
         ) {
         search(
           query: $query,

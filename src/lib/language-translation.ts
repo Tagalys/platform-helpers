@@ -1,4 +1,4 @@
-import { API_VERSION, getMetafieldsToQuery } from "./common";
+import { API_VERSION, getIdFromGraphqlId, getMetafieldsToQuery } from "./common";
 import globalContext from "./global-context";
 import GraphqlQueries from "./graphql-queries";
 import GraphqlResponseFormatter from "./grapqhl-to-common-response-formatter";
@@ -29,7 +29,12 @@ class LanguageTranslation{
     const responseJson = await response.json();
     const graphqlResponseFormatter = new GraphqlResponseFormatter();
     // product is null, if the product is not published to the storefront app
-    return responseJson.data.nodes.filter((product) => product != null).map((product) =>
+    return responseJson.data.nodes.filter((product, index) => {
+      if (product === null) {
+        console.warn(`Product with id: ${getIdFromGraphqlId(this.productIds[index])} is not published to the storefront app`);
+      }
+      return product !== null;
+    }).map((product) =>
       graphqlResponseFormatter.formatProduct(product)
     );
   }

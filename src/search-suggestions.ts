@@ -26,6 +26,7 @@ class SearchSuggestions {
     const query = this.getSearchSuggestionsQuery(resourcesToRequest)
     const isProductRequested = resourcesToRequest.includes('products')
     const isSearchableFieldsProvided = (this.requestState.params?.searchableFields?.length > 0)
+    const languageCode = globalContext.configuration.getLanguageCode()
 
     return `
       query SearchSuggestions(
@@ -35,7 +36,7 @@ class SearchSuggestions {
         ${isSearchableFieldsProvided ? "$searchableFields: '[SearchableField!]" : ''}
       ) @inContext(
           country: ${globalContext.configuration.getCountryCode()},
-          language: ${globalContext.configuration.getLanguageCode()}
+          ${languageCode ? `language: ${languageCode}` : ''}
         ){
         predictiveSearch(
           query: $query,
