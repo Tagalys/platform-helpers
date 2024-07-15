@@ -85,10 +85,13 @@ var MultiMarket = /** @class */ (function () {
                         responseJson = _a.sent();
                         products = responseJson.data.nodes;
                         productDetailsForMarket = {};
-                        products.forEach(function (product) {
+                        products.forEach(function (product, index) {
                             if (product) {
                                 var productId = (0, common_1.getIdFromGraphqlId)(product.id);
                                 productDetailsForMarket[productId] = _this.getMarketSpecificDetails(product);
+                            }
+                            else {
+                                console.warn("Product with id: ".concat(productIds[index], " is not published to the storefront app"));
                             }
                         });
                         return [2 /*return*/, productDetailsForMarket];

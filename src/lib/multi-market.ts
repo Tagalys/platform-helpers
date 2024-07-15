@@ -98,10 +98,12 @@ class MultiMarket {
     const products = responseJson.data.nodes;
     let productDetailsForMarket = {};
 
-    products.forEach((product) => {
+    products.forEach((product, index) => {
       if (product) {
         const productId = getIdFromGraphqlId(product.id);
         productDetailsForMarket[productId] = this.getMarketSpecificDetails(product)
+      } else {
+        console.warn(`Product with id: ${productIds[index]} is not published to the storefront app`);
       }
     });
 
