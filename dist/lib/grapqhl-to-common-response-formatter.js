@@ -132,7 +132,7 @@ var GraphqlResponseFormatter = /** @class */ (function () {
                     alt: mediaItem.node.alt,
                     duration: mediaItem.node.duration,
                     sources: _this.formatVideoSources(mediaItem.node.sources),
-                    preview_image: _this.formatImage(mediaItem.node.preview.image)
+                    preview_image: _this.formatImage(mediaItem.node.previewImage)
                 });
             }
         });
