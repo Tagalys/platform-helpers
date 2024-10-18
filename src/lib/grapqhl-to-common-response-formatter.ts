@@ -124,7 +124,7 @@ class GraphqlResponseFormatter {
           alt: mediaItem.node.alt,
           duration: mediaItem.node.duration,
           sources: this.formatVideoSources(mediaItem.node.sources),
-          preview_image: this.formatImage(mediaItem.node.preview.image)
+          preview_image: this.formatImage(mediaItem.node.previewImage)
         })
       }
     });
