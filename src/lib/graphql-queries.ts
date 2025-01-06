@@ -171,7 +171,7 @@ class GraphqlQueries{
           id
           title
           handle
-          products(first: 10){
+          products(first: 250){
             edges{
               node{
                 ${this.getBasicProductDetails()}
@@ -185,7 +185,7 @@ class GraphqlQueries{
           }
         }
       }
-      references(first: 10){
+      references(first: 250){
         edges{
           node{
             ... on Product{

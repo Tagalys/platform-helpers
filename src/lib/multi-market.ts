@@ -38,7 +38,7 @@ class MultiMarket {
           value
           reference{
             ... on Collection{
-              products(first: 10){
+              products(first: 250){
                 edges{
                   node{
                     id
@@ -55,7 +55,7 @@ class MultiMarket {
               }
             }
           }
-          references(first: 10){
+          references(first: 250){
             edges{
               node{
                 ... on Product{
@@ -223,7 +223,7 @@ class MultiMarket {
       if(Array.isArray(marketSpecificValue.products)){
         const productsFromShopify = marketSpecificValue.products.map((value)=>parseInt(value.productId))
         data.value.products = data.value.products.filter((product)=>this.idPresentInGivenList(productsFromShopify, parseInt(product.id)))
-  
+
         data.value.products.forEach((product) => {
           if (marketSpecificValue.hasOwnProperty("products")) {
             marketSpecificValue.products.forEach((priceInfoForProduct) => {
@@ -244,7 +244,7 @@ class MultiMarket {
     if(Array.isArray(marketSpecificValue)){
       const productsFromShopify = marketSpecificValue.map((value)=>parseInt(value.productId))
       data.value = data.value.filter((product)=>this.idPresentInGivenList(productsFromShopify, parseInt(product.id)))
-  
+
       data.value.forEach((product) => {
         marketSpecificValue.forEach((priceInfoForProduct) => {
           if (product.id === priceInfoForProduct.productId) {
