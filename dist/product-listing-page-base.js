@@ -47,9 +47,16 @@ var Base = /** @class */ (function () {
                 }
                 else {
                     values.forEach(function (filterValue) {
-                        if (_this.responseState.filter_inputs && _this.responseState.filter_inputs[filterValue]) {
-                            var selectedFilterValue = _this.responseState.filter_inputs[filterValue];
-                            filtersToApply_1.push(JSON.parse(selectedFilterValue.input));
+                        if (typeof filterValue === 'object') {
+                            // 1. This is used when the filters are overriden in the beforeAPI call
+                            // 2. filterValue should be provided as an object the ShopifyAPI accepts
+                            filtersToApply_1.push(filterValue);
+                        }
+                        else {
+                            if (_this.responseState.filter_inputs && _this.responseState.filter_inputs[filterValue]) {
+                                var selectedFilterValue = _this.responseState.filter_inputs[filterValue];
+                                filtersToApply_1.push(JSON.parse(selectedFilterValue.input));
+                            }
                         }
                     });
                 }
