@@ -51,10 +51,17 @@ class Base{
           })
         } else {
           values.forEach((filterValue) => {
-            if (this.responseState.filter_inputs && this.responseState.filter_inputs[filterValue]) {
-              const selectedFilterValue = this.responseState.filter_inputs[filterValue]
-              filtersToApply.push(JSON.parse(selectedFilterValue.input))
+            if (typeof filterValue === 'object') {
+              // 1. This is used when the filters are overriden in the beforeAPI call
+              // 2. filterValue should be provided as an object the ShopifyAPI accepts
+              filtersToApply.push(filterValue)
+            } else {
+              if (this.responseState.filter_inputs && this.responseState.filter_inputs[filterValue]) {
+                const selectedFilterValue = this.responseState.filter_inputs[filterValue]
+                filtersToApply.push(JSON.parse(selectedFilterValue.input))
+              }
             }
+
           })
         }
       }
