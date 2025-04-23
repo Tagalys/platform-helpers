@@ -5,6 +5,7 @@ import globalContext from "./lib/global-context";
 import ProductListingPage from "./product-listing-page";
 import SearchSuggestions from "./search-suggestions";
 import Search from "./search";
+import RecentlyViewed from "./recently-viewed";
 
 export default {
   globalContext: {
@@ -17,5 +18,6 @@ export default {
   ...ProductListingPage.export(),
   ...SearchSuggestions.export(),
   ...Search.export(),
+  ...RecentlyViewed.export(),
   ...MultiMarket.export()
 }
