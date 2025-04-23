@@ -79,7 +79,7 @@ class RecentViewed {
     };
   }
 
-  static export(): object {
+  static export() {
     return {
       RecentlyViewed: {
         new: (requestState, responseState) => {

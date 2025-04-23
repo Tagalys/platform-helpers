@@ -6,6 +6,9 @@ declare const _default: {
             resetProductPrices: (response: any) => any;
         };
     };
+    RecentlyViewed: {
+        new: (requestState: any, responseState: any) => object;
+    };
     Search: {
         new: (requestState: any, responseState: any) => {
             getQuery: () => string;

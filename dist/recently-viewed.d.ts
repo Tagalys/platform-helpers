@@ -18,6 +18,10 @@ declare class RecentViewed {
         products: any[];
     };
     helpersToExpose(): object;
-    static export(): object;
+    static export(): {
+        RecentlyViewed: {
+            new: (requestState: any, responseState: any) => object;
+        };
+    };
 }
 export default RecentViewed;
