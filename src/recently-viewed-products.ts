@@ -10,9 +10,9 @@ class RecentViewedProducts {
   private graphqlResponseFormatter: GraphqlResponseFormatter;
 
   constructor(requestState: { productIds: string[] }, responseState: any) {
-    if (!requestState || !Array.isArray(requestState.productIds) || requestState.productIds.length === 0) {
-      throw new Error("RecentViewed requires a non-empty 'productIds' array in requestState");
-    }
+    // if (!requestState || !Array.isArray(requestState.productIds) || requestState.productIds.length === 0) {
+    //   throw new Error("RecentViewed requires a non-empty 'productIds' array in requestState");
+    // }
     this.requestState = requestState;
     this.responseState = responseState;
     this.queries = new GraphqlQueries();

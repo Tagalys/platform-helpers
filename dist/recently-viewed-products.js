@@ -17,9 +17,9 @@ var grapqhl_to_common_response_formatter_1 = require("./lib/grapqhl-to-common-re
 var global_context_1 = require("./lib/global-context");
 var RecentViewedProducts = /** @class */ (function () {
     function RecentViewedProducts(requestState, responseState) {
-        if (!requestState || !Array.isArray(requestState.productIds) || requestState.productIds.length === 0) {
-            throw new Error("RecentViewed requires a non-empty 'productIds' array in requestState");
-        }
+        // if (!requestState || !Array.isArray(requestState.productIds) || requestState.productIds.length === 0) {
+        //   throw new Error("RecentViewed requires a non-empty 'productIds' array in requestState");
+        // }
         this.requestState = requestState;
         this.responseState = responseState;
         this.queries = new graphql_queries_1.default();
