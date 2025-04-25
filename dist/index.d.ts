@@ -6,7 +6,7 @@ declare const _default: {
             resetProductPrices: (response: any) => any;
         };
     };
-    RecentlyViewed: {
+    RecentlyViewedProducts: {
         new: (requestState: any, responseState: any) => object;
     };
     Search: {

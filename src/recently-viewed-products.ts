@@ -3,7 +3,7 @@ import ShopifyAPI from './lib/shopifyApi';
 import GraphqlResponseFormatter from './lib/grapqhl-to-common-response-formatter';
 import globalContext from './lib/global-context';
 
-class RecentViewed {
+class RecentViewedProducts {
   private requestState: { productIds: string[] };
   private responseState: any;
   private queries: GraphqlQueries;
@@ -57,7 +57,7 @@ class RecentViewed {
   }
 
   // --- GraphQL Query Variables ---
-  getQueryVariables(): object {
+  getQueryVariables() {
     return {
       ids: this.formatProductGids(this.requestState.productIds),
       ...this.getMetafieldVariables()
@@ -81,7 +81,7 @@ class RecentViewed {
 
   static export() {
     return {
-      RecentlyViewed: {
+      RecentlyViewedProducts: {
         new: (requestState, responseState) => {
           const instance = new this(requestState, responseState);
           return instance.helpersToExpose();
@@ -91,4 +91,4 @@ class RecentViewed {
   }
 }
 
-export default RecentViewed;
+export default RecentViewedProducts;
