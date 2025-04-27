@@ -1,19 +1,13 @@
-import ShopifyAPI from './lib/shopifyApi';
 declare class RecentViewedProducts {
-    private requestState;
-    private responseState;
     private queries;
     private graphqlResponseFormatter;
-    constructor(requestState: {
-        productIds: string[];
-    }, responseState: any);
-    apiClient(): ShopifyAPI;
+    constructor(requestState: any, responseState: any);
     private formatProductGids;
     getMetafieldVariables(): {
         product_metafields: any[];
     };
     getQuery(): string;
-    getQueryVariables(): {
+    getQueryVariables(productIds: any): {
         product_metafields: any[];
         ids: string[];
     };

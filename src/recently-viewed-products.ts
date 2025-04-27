@@ -4,23 +4,12 @@ import GraphqlResponseFormatter from './lib/grapqhl-to-common-response-formatter
 import globalContext from './lib/global-context';
 
 class RecentViewedProducts {
-  private requestState: { productIds: string[] };
-  private responseState: any;
   private queries: GraphqlQueries;
   private graphqlResponseFormatter: GraphqlResponseFormatter;
 
-  constructor(requestState: { productIds: string[] }, responseState: any) {
-    // if (!requestState || !Array.isArray(requestState.productIds) || requestState.productIds.length === 0) {
-    //   throw new Error("RecentViewed requires a non-empty 'productIds' array in requestState");
-    // }
-    this.requestState = requestState;
-    this.responseState = responseState;
+  constructor(requestState: any, responseState: any) {
     this.queries = new GraphqlQueries();
     this.graphqlResponseFormatter = new GraphqlResponseFormatter();
-  }
-
-  apiClient(): ShopifyAPI {
-    return new ShopifyAPI();
   }
 
   private formatProductGids(productIds: string[]): string[] {
@@ -57,9 +46,9 @@ class RecentViewedProducts {
   }
 
   // --- GraphQL Query Variables ---
-  getQueryVariables() {
+  getQueryVariables(productIds) {
     return {
-      ids: this.formatProductGids(this.requestState.productIds),
+      ids: this.formatProductGids(productIds),
       ...this.getMetafieldVariables()
     };
   }
@@ -74,7 +63,7 @@ class RecentViewedProducts {
   helpersToExpose(): object {
     return {
       getQuery: () => this.getQuery(),
-      getQueryVariables: () => this.getQueryVariables(),
+      getQueryVariables: (productIds) => this.getQueryVariables(productIds),
       formatResponse: (requestOptions, shopifyResponse) => this.formatResponse(requestOptions, shopifyResponse),
     };
   }
