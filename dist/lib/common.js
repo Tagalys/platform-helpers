@@ -86,7 +86,7 @@ var getPriceDetails = function (product) {
     };
 };
 exports.getPriceDetails = getPriceDetails;
-exports.API_VERSION = '2024-10';
+exports.API_VERSION = '2025-01';
 exports.METAFIELD_TYPES = {
     LIST_PRODUCT_REFERENCE: 'list.product_reference',
     COLLECTION_REFERENCE: 'collection_reference',
