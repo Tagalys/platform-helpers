@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var global_context_1 = require("./global-context");
 var unique = function (value, index, self) {
@@ -8,17 +19,7 @@ var TagalysToCommonResponseFormatter = /** @class */ (function () {
     function TagalysToCommonResponseFormatter() {
         var _this = this;
         this.formatDetail = function (detail) {
-            var formattedDetail = {};
-            for (var key in detail) {
-                switch (key) {
-                    case "metafields":
-                        formattedDetail.metafields = _this.formatMetafields(detail);
-                        break;
-                    default:
-                        break;
-                }
-            }
-            return formattedDetail;
+            return __assign(__assign({}, detail), { metafields: _this.formatMetafields(detail) });
         };
     }
     TagalysToCommonResponseFormatter.prototype.formatMetafields = function (detail) {

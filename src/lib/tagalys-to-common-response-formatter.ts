@@ -7,17 +7,10 @@ const unique = (value, index, self) => {
 
 class TagalysToCommonResponseFormatter {
   formatDetail = (detail: any): any => {
-    let formattedDetail : any= {}
-    for(const key in detail){
-      switch (key) {
-        case "metafields":
-          formattedDetail.metafields = this.formatMetafields(detail)
-          break
-        default:
-          break;
-      }
+    return {
+      ...detail,
+      metafields: this.formatMetafields(detail)
     }
-    return formattedDetail
   };
 
   formatMetafields(detail) {
