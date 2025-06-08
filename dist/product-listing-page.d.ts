@@ -10,7 +10,7 @@ declare class ProductListingPage extends Base {
         price_ranges: {};
     }>;
     formatResponse(requestOptions: any, shopifyResponse: any): {
-        name: any;
+        title: any;
         products: any;
         filters: any;
         sort_options: any;
@@ -21,7 +21,7 @@ declare class ProductListingPage extends Base {
         getQuery: () => string;
         getQueryVariables: () => any;
         formatResponse: (requestOptions: any, shopifyResponse: any) => {
-            name: any;
+            title: any;
             products: any;
             filters: any;
             sort_options: any;
@@ -41,7 +41,7 @@ declare class ProductListingPage extends Base {
                 getQuery: () => string;
                 getQueryVariables: () => any;
                 formatResponse: (requestOptions: any, shopifyResponse: any) => {
-                    name: any;
+                    title: any;
                     products: any;
                     filters: any;
                     sort_options: any;

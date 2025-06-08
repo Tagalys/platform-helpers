@@ -16,7 +16,7 @@ declare class Search extends Base {
         sort_options: any;
         page_info: any;
         filter_inputs: {};
-        total: any;
+        total_count: any;
     };
     helpersToExpose(): {
         getQuery: () => string;
@@ -28,7 +28,7 @@ declare class Search extends Base {
             sort_options: any;
             page_info: any;
             filter_inputs: {};
-            total: any;
+            total_count: any;
         };
         getFilterInputs: (filtersFromResponse: any) => {};
         getDataForInitialRequest: (requestOptions: any) => Promise<{
@@ -49,7 +49,7 @@ declare class Search extends Base {
                     sort_options: any;
                     page_info: any;
                     filter_inputs: {};
-                    total: any;
+                    total_count: any;
                 };
                 getFilterInputs: (filtersFromResponse: any) => {};
                 getDataForInitialRequest: (requestOptions: any) => Promise<{

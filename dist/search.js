@@ -144,7 +144,7 @@ var Search = /** @class */ (function (_super) {
             sort_options: this.getSortOptions(requestOptions, DEFAULT_SORT_OPTIONS),
             page_info: shopifyResponse.search.pageInfo,
             filter_inputs: grapqhl_to_common_response_formatter_1.default.getFilterInputs(shopifyResponse.search.filters),
-            total: shopifyResponse.search.totalCount,
+            total_count: shopifyResponse.search.totalCount,
         };
     };
     Search.prototype.helpersToExpose = function () {

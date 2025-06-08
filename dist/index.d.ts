@@ -20,7 +20,7 @@ declare const _default: {
                 sort_options: any;
                 page_info: any;
                 filter_inputs: {};
-                total: any;
+                total_count: any;
             };
             getFilterInputs: (filtersFromResponse: any) => {};
             getDataForInitialRequest: (requestOptions: any) => Promise<{
@@ -42,7 +42,7 @@ declare const _default: {
             getQuery: () => string;
             getQueryVariables: () => any;
             formatResponse: (requestOptions: any, shopifyResponse: any) => {
-                name: any;
+                title: any;
                 products: any;
                 filters: any;
                 sort_options: any;
