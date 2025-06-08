@@ -158,7 +158,7 @@ class Search extends Base{
       sort_options: this.getSortOptions(requestOptions, DEFAULT_SORT_OPTIONS),
       page_info: shopifyResponse.search.pageInfo,
       filter_inputs: GraphqlResponseFormatter.getFilterInputs(shopifyResponse.search.filters),
-      total: shopifyResponse.search.totalCount,
+      total_count: shopifyResponse.search.totalCount,
     }
   }
 

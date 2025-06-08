@@ -170,7 +170,7 @@ class ProductListingPage extends Base{
 
   formatResponse(requestOptions, shopifyResponse) {
     return {
-      name: shopifyResponse.collection.title,
+      title: shopifyResponse.collection.title,
       products: this.graphqlResponseFormatter.formatProducts(shopifyResponse.collection.products),
       filters: this.graphqlResponseFormatter.formatFilters(shopifyResponse.collection.products.filters, this.requestState.filters, this.responseState.price_ranges),
       sort_options: this.getSortOptions(requestOptions, DEFAULT_SORT_OPTIONS),
