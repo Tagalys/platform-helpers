@@ -14,24 +14,24 @@ declare class MultiMarket {
         variantPricesMap: {};
     };
     getMetafieldValue(metafield: any): any;
-    updateProductDetailsForMarket(response: any): Promise<any>;
+    updateProductDetailsForMarket(products: any): Promise<any>;
     mutateProductDetails(product: any, marketSpecificProductDetails: any): void;
     updateMetafieldPrices(metafields: any, marketSpecificMetafields: any): void;
     idPresentInGivenList(ListOfIds: any, id: any): boolean;
     updateCollectionReferenceMetafield(data: any, marketSpecificValue: any): void;
     updateProductListReferenceMetafield(data: any, marketSpecificValue: any): void;
-    resetProductPrices(response: any): any;
+    resetProductPrices(products: any): any;
     resetProductPrice(product: any): void;
     resetMetafieldPrices(metafields: any): void;
     helpersToExpose(): {
-        updateProductDetailsForMarket: (response: any) => Promise<any>;
-        resetProductPrices: (response: any) => any;
+        updateProductDetailsForMarket: (products: any) => Promise<any>;
+        resetProductPrices: (products: any) => any;
     };
     static export(): {
         MultiMarket: {
             new: () => {
-                updateProductDetailsForMarket: (response: any) => Promise<any>;
-                resetProductPrices: (response: any) => any;
+                updateProductDetailsForMarket: (products: any) => Promise<any>;
+                resetProductPrices: (products: any) => any;
             };
         };
     };

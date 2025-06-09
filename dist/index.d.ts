@@ -2,8 +2,8 @@ import ShopifyAPI from "./lib/shopifyApi";
 declare const _default: {
     MultiMarket: {
         new: () => {
-            updateProductDetailsForMarket: (response: any) => Promise<any>;
-            resetProductPrices: (response: any) => any;
+            updateProductDetailsForMarket: (products: any) => Promise<any>;
+            resetProductPrices: (products: any) => any;
         };
     };
     RecentlyViewedProducts: {

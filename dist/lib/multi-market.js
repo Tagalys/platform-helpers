@@ -139,31 +139,28 @@ var MultiMarket = /** @class */ (function () {
         }
         return value;
     };
-    MultiMarket.prototype.updateProductDetailsForMarket = function (response) {
+    MultiMarket.prototype.updateProductDetailsForMarket = function (products) {
         return __awaiter(this, void 0, void 0, function () {
-            var productIds, languageTranslation, translatedProductDetails, marketSpecificDetails_1;
+            var productIds, languageTranslation, translatedProductDetails, marketSpecificDetails;
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!response.hasOwnProperty("products")) return [3 /*break*/, 4];
-                        productIds = response.products.map(function (product) { return product.id; });
+                        productIds = products.map(function (product) { return product.id; });
                         if (!global_context_1.default.configuration.canUseStorefrontAPIForLanguageCode()) return [3 /*break*/, 2];
                         languageTranslation = new language_translation_1.default(productIds);
                         return [4 /*yield*/, languageTranslation.translate()];
                     case 1:
                         translatedProductDetails = _a.sent();
-                        response.products = translatedProductDetails;
-                        return [2 /*return*/, response];
+                        return [2 /*return*/, translatedProductDetails];
                     case 2: return [4 /*yield*/, this.getProductDetailsForMarket(productIds)];
                     case 3:
-                        marketSpecificDetails_1 = _a.sent();
-                        response.products.forEach(function (product) {
-                            var hasMarketSpecificDetails = marketSpecificDetails_1.hasOwnProperty(product.id);
-                            hasMarketSpecificDetails ? _this.mutateProductDetails(product, marketSpecificDetails_1[product.id]) : _this.resetProductPrice(product);
+                        marketSpecificDetails = _a.sent();
+                        products.forEach(function (product) {
+                            var hasMarketSpecificDetails = marketSpecificDetails.hasOwnProperty(product.id);
+                            hasMarketSpecificDetails ? _this.mutateProductDetails(product, marketSpecificDetails[product.id]) : _this.resetProductPrice(product);
                         });
-                        _a.label = 4;
-                    case 4: return [2 /*return*/, response];
+                        return [2 /*return*/, products];
                 }
             });
         });
@@ -245,12 +242,10 @@ var MultiMarket = /** @class */ (function () {
             });
         }
     };
-    MultiMarket.prototype.resetProductPrices = function (response) {
+    MultiMarket.prototype.resetProductPrices = function (products) {
         var _this = this;
-        if (response.products) {
-            return response.products.forEach(function (product) { return _this.resetProductPrice(product); });
-        }
-        return response;
+        products.forEach(function (product) { return _this.resetProductPrice(product); });
+        return products;
     };
     MultiMarket.prototype.resetProductPrice = function (product) {
         product.price_varies = null;
@@ -294,8 +289,8 @@ var MultiMarket = /** @class */ (function () {
     MultiMarket.prototype.helpersToExpose = function () {
         var _this = this;
         return {
-            updateProductDetailsForMarket: function (response) { return _this.updateProductDetailsForMarket(response); },
-            resetProductPrices: function (response) { return _this.resetProductPrices(response); }
+            updateProductDetailsForMarket: function (products) { return _this.updateProductDetailsForMarket(products); },
+            resetProductPrices: function (products) { return _this.resetProductPrices(products); }
         };
     };
     MultiMarket.export = function () {
