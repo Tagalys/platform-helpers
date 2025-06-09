@@ -155,24 +155,21 @@ class MultiMarket {
     return value
   }
 
-  async updateProductDetailsForMarket(response) {
-    if (response.hasOwnProperty("products")) {
-      const productIds = response.products.map((product) => product.id)
-      if (globalContext.configuration.canUseStorefrontAPIForLanguageCode()) {
-        const languageTranslation = new LanguageTranslation(productIds)
-        const translatedProductDetails = await languageTranslation.translate()
-        response.products = translatedProductDetails
-        return response
-      }
-
-      // If a country code is changed, the following lines will be called.
-      let marketSpecificDetails = await this.getProductDetailsForMarket(productIds)
-      response.products.forEach((product) => {
-        const hasMarketSpecificDetails = marketSpecificDetails.hasOwnProperty(product.id)
-        hasMarketSpecificDetails ? this.mutateProductDetails(product, marketSpecificDetails[product.id]) : this.resetProductPrice(product)
-      })
+  async updateProductDetailsForMarket(products) {
+    const productIds = products.map((product) => product.id)
+    if (globalContext.configuration.canUseStorefrontAPIForLanguageCode()) {
+      const languageTranslation = new LanguageTranslation(productIds)
+      const translatedProductDetails = await languageTranslation.translate()
+      return translatedProductDetails
     }
-    return response
+
+    // If a country code is changed, the following lines will be called.
+    let marketSpecificDetails = await this.getProductDetailsForMarket(productIds)
+    products.forEach((product) => {
+      const hasMarketSpecificDetails = marketSpecificDetails.hasOwnProperty(product.id)
+      hasMarketSpecificDetails ? this.mutateProductDetails(product, marketSpecificDetails[product.id]) : this.resetProductPrice(product)
+    })
+    return products 
   }
 
   mutateProductDetails(product, marketSpecificProductDetails) {
@@ -255,11 +252,9 @@ class MultiMarket {
     }
   }
 
-  resetProductPrices(response) {
-    if (response.products) {
-      return response.products.forEach((product) => this.resetProductPrice(product))
-    }
-    return response
+  resetProductPrices(products) {
+    products.forEach((product) => this.resetProductPrice(product))
+    return products
   }
 
   resetProductPrice(product) {
@@ -304,8 +299,8 @@ class MultiMarket {
 
   helpersToExpose() {
     return {
-      updateProductDetailsForMarket: (response) => this.updateProductDetailsForMarket(response),
-      resetProductPrices: (response) => this.resetProductPrices(response)
+      updateProductDetailsForMarket: (products) => this.updateProductDetailsForMarket(products),
+      resetProductPrices: (products) => this.resetProductPrices(products)
     }
   }
 
