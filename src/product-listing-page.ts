@@ -87,7 +87,7 @@ class ProductListingPage extends Base{
 
   getQueryVariables() {
     return {
-      id: `gid://shopify/Collection/${this.requestState.product_listing_page_id}`,
+      id: `gid://shopify/Collection/${this.requestState.collectionId}`,
       ...this.getSortVariables(),
       ...this.getPaginationVariables(),
       ...this.getFilterVariables(),
@@ -161,7 +161,7 @@ class ProductListingPage extends Base{
       params: JSON.stringify({
         query: filterInputsQuery,
         variables: {
-          id: `gid://shopify/Collection/${requestOptions.params.product_listing_page_id}`
+          id: `gid://shopify/Collection/${requestOptions.params.collectionId}`
         }
       })
     })

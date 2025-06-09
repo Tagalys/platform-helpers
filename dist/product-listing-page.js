@@ -109,7 +109,7 @@ var ProductListingPage = /** @class */ (function (_super) {
         return "\n      query Collection(\n        $id: ID,\n        $first: Int,\n        $last: Int,\n        $before: String,\n        $after: String,\n        $sortKey: ProductCollectionSortKeys,\n        $reverse: Boolean,\n        $filters: [ProductFilter!],\n        $product_metafields: [HasMetafieldsIdentifier!]!,\n      ) @inContext(country: ".concat(global_context_1.default.configuration.getCountryCode(), ") {\n        collection(id: $id){\n          title\n          handle\n          products(first: $first, last: $last, after: $after, before: $before, sortKey: $sortKey, reverse: $reverse, filters: $filters) {\n            filters {\n              id\n              label\n              type\n              values {\n                id\n                label\n                count\n                input\n              }\n            }\n            edges{\n              node{\n                ").concat(this.queries.getProductDetails(), "\n              }\n            }\n            pageInfo{\n              hasNextPage\n              hasPreviousPage\n              endCursor\n              startCursor\n            }\n          }\n        }\n      }\n    ");
     };
     ProductListingPage.prototype.getQueryVariables = function () {
-        return __assign(__assign(__assign(__assign({ id: "gid://shopify/Collection/".concat(this.requestState.product_listing_page_id) }, this.getSortVariables()), this.getPaginationVariables()), this.getFilterVariables()), this.getMetafieldVariables());
+        return __assign(__assign(__assign(__assign({ id: "gid://shopify/Collection/".concat(this.requestState.collectionId) }, this.getSortVariables()), this.getPaginationVariables()), this.getFilterVariables()), this.getMetafieldVariables());
     };
     ProductListingPage.prototype.getSortVariables = function () {
         var sortOptionToSortKeyMap = {
@@ -170,7 +170,7 @@ var ProductListingPage = /** @class */ (function (_super) {
                                 params: JSON.stringify({
                                     query: filterInputsQuery,
                                     variables: {
-                                        id: "gid://shopify/Collection/".concat(requestOptions.params.product_listing_page_id)
+                                        id: "gid://shopify/Collection/".concat(requestOptions.params.collectionId)
                                     }
                                 })
                             })];
