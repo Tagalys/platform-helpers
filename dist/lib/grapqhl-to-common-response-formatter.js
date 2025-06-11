@@ -252,13 +252,13 @@ var GraphqlResponseFormatter = /** @class */ (function () {
             if (isCheckboxFilter) {
                 return {
                     id: filter.id,
-                    name: filter.label,
+                    label: filter.label,
                     type: "checkbox",
                     items: filter.values.map(function (filterItem) {
                         var selected = (selectedFilter && selectedFilter.includes(filterItem.id)) ? true : false;
                         return ({
                             id: filterItem.id,
-                            name: filterItem.label,
+                            label: filterItem.label,
                             count: filterItem.count,
                             selected: selected
                         });
@@ -270,7 +270,7 @@ var GraphqlResponseFormatter = /** @class */ (function () {
                 var hasPriceRanges = initialPriceRanges.price_ranges;
                 var filterItem = {
                     id: filter.id,
-                    name: filter.label,
+                    label: filter.label,
                     type: "range",
                     display_format: "{{currency_label}}{{value}}",
                     min: hasPriceRanges ? initialPriceRanges.price_ranges.min : parsedInput.price.min,

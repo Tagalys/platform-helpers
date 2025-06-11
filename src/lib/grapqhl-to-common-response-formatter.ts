@@ -262,13 +262,13 @@ class GraphqlResponseFormatter {
       if (isCheckboxFilter) {
         return {
           id: filter.id,
-          name: filter.label,
+          label: filter.label,
           type: "checkbox",
           items: filter.values.map((filterItem) => {
             const selected = (selectedFilter && selectedFilter.includes(filterItem.id)) ? true : false
             return ({
               id: filterItem.id,
-              name: filterItem.label,
+              label: filterItem.label,
               count: filterItem.count,
               selected: selected
             })
@@ -281,7 +281,7 @@ class GraphqlResponseFormatter {
         const hasPriceRanges = initialPriceRanges.price_ranges
         let filterItem = {
           id: filter.id,
-          name: filter.label,
+          label: filter.label,
           type: "range",
           display_format: "{{currency_label}}{{value}}",
           min: hasPriceRanges ? initialPriceRanges.price_ranges.min : parsedInput.price.min,
