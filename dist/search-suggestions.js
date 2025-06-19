@@ -96,11 +96,11 @@ var SearchSuggestions = /** @class */ (function () {
         var hasRequestedAllowedTypes = requestedResources.every(function (type) { return allowedResources.includes(type); });
         return {
             valid: hasRequestedAllowedTypes,
-            message: hasRequestedAllowedTypes ? '' : "Invalid request type requested, allowed types are ".concat(allowedResources.join(', '))
+            message: hasRequestedAllowedTypes ? '' : "Invalid sections type requested, allowed types are ".concat(allowedResources.join(', '))
         };
     };
     SearchSuggestions.prototype.getResourcesToRequest = function () {
-        return Object.keys(this.requestState.params.request);
+        return Object.keys(this.requestState.params.sections);
     };
     SearchSuggestions.prototype.formatResponse = function (_, shopifyResponse) {
         var _this = this;
@@ -111,15 +111,15 @@ var SearchSuggestions = /** @class */ (function () {
         var shopifyResponseData = shopifyResponse.predictiveSearch;
         var resourcesToRequest = this.getResourcesToRequest();
         resourcesToRequest.forEach(function (resource) {
-            var limit = _this.requestState.params.request[resource].limit;
+            var count = _this.requestState.params.sections[resource].count;
             if (shopifyResponseData[resource].length > 0) {
                 switch (resource) {
                     case "queries": {
                         var thisSection = {
-                            section_id: "queries",
-                            section_title: "Queries",
-                            items: shopifyResponseData.queries.slice(0, limit).map(function (query) { return ({
-                                displayString: query.text,
+                            id: "queries",
+                            title: "Queries",
+                            items: shopifyResponseData.queries.slice(0, count).map(function (query) { return ({
+                                query: query.text,
                                 queryString: "".concat(_this.requestState.queryStringConfiguration.queryParameter, "=").concat(query.text),
                             }); }),
                         };
@@ -128,10 +128,10 @@ var SearchSuggestions = /** @class */ (function () {
                     }
                     case "collections": {
                         var thisSection = {
-                            section_id: "collections",
-                            section_title: "Collections",
-                            items: shopifyResponseData.collections.slice(0, limit).map(function (collection) { return ({
-                                displayString: collection.title,
+                            id: "collections",
+                            title: "Collections",
+                            items: shopifyResponseData.collections.slice(0, count).map(function (collection) { return ({
+                                title: collection.title,
                                 link: collection.onlineStoreURL,
                             }); }),
                         };
@@ -140,10 +140,10 @@ var SearchSuggestions = /** @class */ (function () {
                     }
                     case "pages": {
                         var thisSection = {
-                            section_id: "pages",
-                            section_title: "Pages",
-                            items: shopifyResponseData.pages.slice(0, limit).map(function (page) { return ({
-                                displayString: page.title,
+                            id: "pages",
+                            title: "Pages",
+                            items: shopifyResponseData.pages.slice(0, count).map(function (page) { return ({
+                                title: page.title,
                                 link: page.onlineStoreUrl,
                             }); }),
                         };
@@ -152,10 +152,10 @@ var SearchSuggestions = /** @class */ (function () {
                     }
                     case "articles": {
                         var thisSection = {
-                            section_id: "articles",
-                            section_title: "Articles",
-                            items: shopifyResponseData.articles.slice(0, limit).map(function (article) { return ({
-                                displayString: article.title,
+                            id: "articles",
+                            title: "Articles",
+                            items: shopifyResponseData.articles.slice(0, count).map(function (article) { return ({
+                                title: article.title,
                                 link: article.onlineStoreUrl,
                             }); }),
                         };
@@ -163,7 +163,7 @@ var SearchSuggestions = /** @class */ (function () {
                         break;
                     }
                     case "products": {
-                        response.products = shopifyResponseData.products.slice(0, limit).map(function (product) {
+                        response.products = shopifyResponseData.products.slice(0, count).map(function (product) {
                             return _this.graphqlResponseFormatter.formatProduct(product);
                         });
                         break;

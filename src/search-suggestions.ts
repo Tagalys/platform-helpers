@@ -98,12 +98,12 @@ class SearchSuggestions {
     const hasRequestedAllowedTypes = requestedResources.every(type => allowedResources.includes(type));
     return {
       valid: hasRequestedAllowedTypes,
-      message: hasRequestedAllowedTypes ? '' : `Invalid request type requested, allowed types are ${allowedResources.join(', ')}`
+      message: hasRequestedAllowedTypes ? '' : `Invalid sections type requested, allowed types are ${allowedResources.join(', ')}`
     };
   }
 
   getResourcesToRequest() {
-    return Object.keys(this.requestState.params.request)
+    return Object.keys(this.requestState.params.sections)
   }
 
   getSearchSuggestionsQuery = (resourcesToRequest) => {
@@ -161,15 +161,15 @@ class SearchSuggestions {
     const resourcesToRequest = this.getResourcesToRequest();
 
     resourcesToRequest.forEach(resource => {
-      const limit = this.requestState.params.request[resource].limit;
+      const count = this.requestState.params.sections[resource].count;
       if (shopifyResponseData[resource].length > 0) {
         switch (resource) {
           case "queries": {
             const thisSection = {
-              section_id: "queries",
-              section_title: "Queries",
-              items: shopifyResponseData.queries.slice(0, limit).map(query => ({
-                displayString: query.text,
+              id: "queries",
+              title: "Queries",
+              items: shopifyResponseData.queries.slice(0, count).map(query => ({
+                query: query.text,
                 queryString: `${this.requestState.queryStringConfiguration.queryParameter}=${query.text}`,
               })),
             };
@@ -178,10 +178,10 @@ class SearchSuggestions {
           }
           case "collections": {
             const thisSection = {
-              section_id: "collections",
-              section_title: "Collections",
-              items: shopifyResponseData.collections.slice(0, limit).map(collection => ({
-                displayString: collection.title,
+              id: "collections",
+              title: "Collections",
+              items: shopifyResponseData.collections.slice(0, count).map(collection => ({
+                title: collection.title,
                 link: collection.onlineStoreURL,
               })),
             };
@@ -190,10 +190,10 @@ class SearchSuggestions {
           }
           case "pages": {
             const thisSection = {
-              section_id: "pages",
-              section_title: "Pages",
-              items: shopifyResponseData.pages.slice(0, limit).map(page => ({
-                displayString: page.title,
+              id: "pages",
+              title: "Pages",
+              items: shopifyResponseData.pages.slice(0, count).map(page => ({
+                title: page.title,
                 link: page.onlineStoreUrl,
               })),
             };
@@ -202,10 +202,10 @@ class SearchSuggestions {
           }
           case "articles": {
             const thisSection = {
-              section_id: "articles",
-              section_title: "Articles",
-              items: shopifyResponseData.articles.slice(0, limit).map(article => ({
-                displayString: article.title,
+              id: "articles",
+              title: "Articles",
+              items: shopifyResponseData.articles.slice(0, count).map(article => ({
+                title: article.title,
                 link: article.onlineStoreUrl,
               })),
             };
@@ -213,7 +213,7 @@ class SearchSuggestions {
             break;
           }
           case "products": {
-            response.products = shopifyResponseData.products.slice(0, limit).map(product =>
+            response.products = shopifyResponseData.products.slice(0, count).map(product =>
               this.graphqlResponseFormatter.formatProduct(product)
             );
             break;
