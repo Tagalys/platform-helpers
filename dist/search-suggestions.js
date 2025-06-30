@@ -170,9 +170,6 @@ var SearchSuggestions = /** @class */ (function () {
                         break;
                     }
                     case "products": {
-                        response.products = shopifyResponseData.products.slice(0, count).map(function (product) {
-                            return _this.graphqlResponseFormatter.formatProduct(product);
-                        });
                         var thisSection = {
                             id: "products",
                             type: "products",

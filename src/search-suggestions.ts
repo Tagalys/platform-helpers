@@ -220,9 +220,6 @@ class SearchSuggestions {
             break;
           }
           case "products": {
-            response.products = shopifyResponseData.products.slice(0, count).map(product =>
-              this.graphqlResponseFormatter.formatProduct(product)
-            );
             const thisSection = {
               id: "products",
               type: "products",
