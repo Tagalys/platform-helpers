@@ -154,8 +154,7 @@ class SearchSuggestions {
 
   formatResponse(_, shopifyResponse) {
     const response: any = {
-      queries: [],
-      products: [],
+      sections: {}
     };
     const shopifyResponseData = shopifyResponse.predictiveSearch;
     const resourcesToRequest = this.getResourcesToRequest();
@@ -168,54 +167,71 @@ class SearchSuggestions {
             const thisSection = {
               id: "queries",
               title: "Queries",
+              type: "search_queries",
+              total_count: shopifyResponseData.queries.length,
               items: shopifyResponseData.queries.slice(0, count).map(query => ({
                 query: query.text,
                 queryString: `${this.requestState.queryStringConfiguration.queryParameter}=${query.text}`,
               })),
             };
-            response.queries.push(thisSection);
+            response.sections.queries = thisSection;
             break;
           }
           case "collections": {
             const thisSection = {
               id: "collections",
               title: "Collections",
+              type: "link",
+              total_count: shopifyResponseData.collections.length,
               items: shopifyResponseData.collections.slice(0, count).map(collection => ({
                 title: collection.title,
                 link: collection.onlineStoreURL,
               })),
             };
-            response.queries.push(thisSection);
+            response.sections.collections = thisSection;
             break;
           }
           case "pages": {
             const thisSection = {
               id: "pages",
               title: "Pages",
+              type: "link",
+              total_count: shopifyResponseData.pages.length,
               items: shopifyResponseData.pages.slice(0, count).map(page => ({
                 title: page.title,
                 link: page.onlineStoreUrl,
               })),
             };
-            response.queries.push(thisSection);
+            response.sections.pages = thisSection;
             break;
           }
           case "articles": {
             const thisSection = {
               id: "articles",
               title: "Articles",
+              type: "link",
+              total_count: shopifyResponseData.articles.length,
               items: shopifyResponseData.articles.slice(0, count).map(article => ({
                 title: article.title,
                 link: article.onlineStoreUrl,
               })),
             };
-            response.queries.push(thisSection);
+            response.sections.articles = thisSection;
             break;
           }
           case "products": {
             response.products = shopifyResponseData.products.slice(0, count).map(product =>
               this.graphqlResponseFormatter.formatProduct(product)
             );
+            const thisSection = {
+              id: "products",
+              type: "products",
+              total_count: shopifyResponseData.products.length,
+              items: shopifyResponseData.products.slice(0, count).map(product =>
+                this.graphqlResponseFormatter.formatProduct(product)
+              )
+            };
+            response.sections.products = thisSection;
             break;
           }
           default:
