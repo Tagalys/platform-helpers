@@ -26,7 +26,7 @@ var TagalysToCommonResponseFormatter = /** @class */ (function () {
         for (var namespace in detail.metafields) {
             for (var key in detail.metafields[namespace]) {
                 var isConfigured = global_context_1.default.shopifyConfiguration.isMetafieldConfigured(namespace, key, "products");
-                if (isConfigured) {
+                if (!isConfigured) {
                     delete detail.metafields[namespace][key];
                     if (Object.keys(detail.metafields[namespace]).length === 0) {
                         delete detail.metafields[namespace];
