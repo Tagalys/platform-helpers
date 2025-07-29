@@ -17,7 +17,7 @@ class TagalysToCommonResponseFormatter {
     for (const namespace in detail.metafields) {
       for (const key in detail.metafields[namespace]) {
         const isConfigured = globalContext.shopifyConfiguration.isMetafieldConfigured(namespace, key, "products")
-        if(isConfigured){
+        if(!isConfigured){
           delete detail.metafields[namespace][key]
           if(Object.keys(detail.metafields[namespace]).length === 0){
             delete detail.metafields[namespace]
